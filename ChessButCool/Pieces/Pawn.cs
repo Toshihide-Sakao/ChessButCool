@@ -22,7 +22,7 @@ namespace ChessButCool.Pieces
 
         }
 
-        private void ListAllMoves()
+        protected override void ListAllMoves()
         {
             if (FirstMove()) // If first time moving, give them the choice to move 2 steps. 
             {

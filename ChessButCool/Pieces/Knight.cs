@@ -14,5 +14,11 @@ namespace ChessButCool.Pieces
 		{
 
 		}
+
+		protected override void ListAllMoves()
+        {
+			
+		}
+		
 	}
 }

@@ -37,5 +37,6 @@ namespace ChessButCool.Pieces
 		public abstract void Move();
 
 		public abstract void ShowMoves();
+		protected abstract void ListAllMoves();
 	}
 }
