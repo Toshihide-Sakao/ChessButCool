@@ -1,0 +1,133 @@
+<Project>
+  <Name>Bruh</Name>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Chess</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>Piece</Name>
+        <Access>Public</Access>
+        <Location left="714" top="211" />
+        <Size width="223" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">protected SideColor side</Member>
+        <Member type="Field">protected Vector2Int position</Member>
+        <Member type="Property">public SideColor Side { get; set; }</Member>
+        <Member type="Property">public Vector2Int Position { get; set; }</Member>
+        <Member type="Method">public void Move()</Member>
+        <Member type="Method">public void ShowMoves()</Member>
+        <Modifier>Abstract</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Pawn</Name>
+        <Access>Public</Access>
+        <Location left="204" top="589" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>King</Name>
+        <Access>Public</Access>
+        <Location left="407" top="589" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Queen</Name>
+        <Access>Public</Access>
+        <Location left="607" top="589" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Rook</Name>
+        <Access>Public</Access>
+        <Location left="862" top="589" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Bishop</Name>
+        <Access>Public</Access>
+        <Location left="1065" top="589" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Knight</Name>
+        <Access>Public</Access>
+        <Location left="1269" top="589" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Enum">
+        <Name>SideColor</Name>
+        <Access>Public</Access>
+        <Location left="1698" top="59" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Value>White = 0</Value>
+        <Value>Black = 1</Value>
+      </Entity>
+      <Entity type="Class">
+        <Name>Vector2Int</Name>
+        <Access>Public</Access>
+        <Location left="1399" top="22" />
+        <Size width="237" height="244" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">int x</Member>
+        <Member type="Field">int y</Member>
+        <Member type="Method">public void Add(int x, int y)</Member>
+        <Member type="Method">public void Add(Vector2Int vector2)</Member>
+        <Member type="Constructor">public Vector2Int()</Member>
+        <Member type="Constructor">public Vector2Int(int x, int y)</Member>
+        <Member type="Constructor">public Vector2Int(int xy)</Member>
+        <Member type="Property">public int X { get; set; }</Member>
+        <Member type="Property">public int Y { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>ChessBoard</Name>
+        <Access>Public</Access>
+        <Location left="1771" top="384" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public void Draw()</Member>
+        <Member type="Constructor">public ChessBoard()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Generalization" first="1" second="0">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="2" second="0">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="3" second="0">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="5" second="0">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="6" second="0">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="4" second="0">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+</Project>
