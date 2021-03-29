@@ -6,10 +6,10 @@ namespace ChessButCool.Pieces
     public class Pawn : Piece
     {
 
-        public Pawn(Vector2Int position)
+        public Pawn(Vector2Int position, SideColor side)
         {
             this.position = position;
-
+            this.side = side;
         }
 
         public override void Move()

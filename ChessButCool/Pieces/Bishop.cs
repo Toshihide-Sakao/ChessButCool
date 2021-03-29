@@ -5,6 +5,12 @@ namespace ChessButCool.Pieces
 {
 	public class Bishop : Piece
 	{
+		public Bishop(Vector2Int position, SideColor side)
+        {
+            this.position = position;
+            this.side = side;
+        }
+
 		public override void Move()
 		{
 
