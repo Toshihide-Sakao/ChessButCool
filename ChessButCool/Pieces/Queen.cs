@@ -22,11 +22,8 @@ namespace ChessButCool.Pieces
 		
 		protected override void ListAllMoves()
         {
-			for (int x = 0; x < 8; x++)
-			{
-				moves.Add(new Vector2Int());
-			}
-			
+			base.AddRookMoves();
+			base.AddBishopMoves();
 		}
 
 	}

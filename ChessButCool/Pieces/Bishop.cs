@@ -23,7 +23,7 @@ namespace ChessButCool.Pieces
 
 		protected override void ListAllMoves()
         {
-			
+			base.AddBishopMoves();
 		}
 
 	}

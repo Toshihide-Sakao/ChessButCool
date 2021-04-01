@@ -38,5 +38,38 @@ namespace ChessButCool.Pieces
 
 		public abstract void ShowMoves();
 		protected abstract void ListAllMoves();
+
+		protected void AddRookMoves()
+		{
+			// adding all possible x routes (as a rook)
+			for (int x = -position.X; x < (-position.X) + 8; x++)
+			{
+				if (x != position.X || !moves.Contains(new Vector2Int(x, 0)))
+				{
+					moves.Add(new Vector2Int(x, 0));
+				}
+			}
+			// adding all possible y routes (as a rook)
+			for (int y = -position.Y; y < (-position.Y) + 8; y++)
+			{
+				if (y != position.Y || !moves.Contains(new Vector2Int(0, y)))
+				{
+					moves.Add(new Vector2Int(0, y));
+				}
+			}
+		}
+
+		protected void AddBishopMoves()
+		{
+			// adding all possible diagonal (as a bishop)
+			for (int q = -8; q < 8; q++)
+			{
+				if (new Vector2Int(q) != position || !moves.Contains(new Vector2Int(q)))
+				{
+					moves.Add(new Vector2Int(q));
+				}
+				
+			}
+		}
 	}
 }
