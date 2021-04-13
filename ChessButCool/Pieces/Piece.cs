@@ -63,7 +63,7 @@ namespace ChessButCool.Pieces
 				case 'K':
 					return new King(pos, (SideColor)int.Parse(type[0].ToString()));
 				default:
-					return ;
+					return new Dummy();
 			}
 		}
 

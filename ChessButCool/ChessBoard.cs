@@ -65,18 +65,21 @@ namespace ChessButCool
                     {
                         Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(29, 112, 89, 255));
                     }
-
-                    if (map[x, y].Value2 != "")
+                    if (!map[x, y].GetnoVal2())
                     {
-                        string path = basePath + map[x, y].Value2 + ".png";
-                        Image piece = Raylib.LoadImage(path);
-                        // Image piece = images[map[x, y].Value2];
-                        Raylib.ImageResize(ref piece, sqWidth, sqWidth);
-                        Texture2D texture = Raylib.LoadTextureFromImage(piece);
-                        Raylib.DrawTexture(texture, xPos, yPos, Color.WHITE);
+                        // if (map[x, y].Value2.GetType() !is Dummy)
+                        // {
+                            string path = basePath + map[x, y].Value2.PieceType + ".png";
+                            Image piece = Raylib.LoadImage(path);
+                            // Image piece = images[map[x, y].Value2];
+                            Raylib.ImageResize(ref piece, sqWidth, sqWidth);
+                            Texture2D texture = Raylib.LoadTextureFromImage(piece);
+                            Raylib.DrawTexture(texture, xPos, yPos, Color.WHITE);
 
-                        Raylib.UnloadImage(piece);
+                            Raylib.UnloadImage(piece);
+                        // }
                     }
+
 
                 }
             }
@@ -93,7 +96,7 @@ namespace ChessButCool
             if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
             {
                 Vector2Int mousepos = new Vector2Int(Raylib.GetMousePosition());
-                
+
                 if (mousepos.X > pos.X && mousepos.X < (pos.X + width) && mousepos.Y > pos.Y && mousepos.Y < (pos.Y + width))
                 {
                     int mapX = (mousepos.X - pos.X) / sqWidth;
@@ -123,11 +126,12 @@ namespace ChessButCool
                     }
                     else if (char.IsUpper(item))
                     {
-                        map[currentPos.X, currentPos.Y].Value2 = "0" + item.ToString().ToUpper();
+
+                        map[currentPos.X, currentPos.Y].Value2 = Piece.GetPieceFromPieceType("0" + item.ToString().ToUpper(), currentPos);
                     }
                     else
                     {
-                        map[currentPos.X, currentPos.Y].Value2 = "1" + item.ToString().ToUpper();
+                        map[currentPos.X, currentPos.Y].Value2 = Piece.GetPieceFromPieceType("1" + item.ToString().ToUpper(), currentPos);
                     }
                     currentPos.X++;
                 }
@@ -143,14 +147,14 @@ namespace ChessButCool
                     if ((x % 2 == 0 && y % 2 == 0) || (x % 2 == 1 && y % 2 == 1)) // if white square
                     {
                         Pair<int, Piece> pair = new();
-                        pair.SetValue(0, "");
+                        pair.SetValue(0);
 
                         map[x, y] = pair;
                     }
                     else // if not black square
                     {
                         Pair<int, Piece> pair = new();
-                        pair.SetValue(1, "");
+                        pair.SetValue(1);
 
                         map[x, y] = pair;
                     }

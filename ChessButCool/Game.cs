@@ -17,7 +17,7 @@ namespace ChessButCool
         }
         public void Draw()
         {
-            Raylib.InitWindow(width, height, "Puyo Puyo");
+            Raylib.InitWindow(width, height, "Chess");
 
             // generate chessboard
             ChessBoard board = new ChessBoard(700, new Vector2Int(150, 50));

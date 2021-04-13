@@ -9,7 +9,7 @@ namespace ChessButCool.Pieces
         {
             this.position = position;
             this.side = side;
-			PieceType = side + "Q";
+			PieceType = ((int)side).ToString() + "Q";
         }
 		public override void Move()
 		{
