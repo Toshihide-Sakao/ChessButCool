@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace ChessButCool
 {
@@ -42,6 +43,12 @@ namespace ChessButCool
 		{
 			this.x = xy;
 			this.y = xy;
+		}
+
+		public Vector2Int(Vector2 vector2)
+		{
+			this.x = (int)vector2.X;
+			this.Y = (int)vector2.Y;
 		}
 
 		public int X

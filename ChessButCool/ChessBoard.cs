@@ -9,17 +9,18 @@ namespace ChessButCool
     {
         Vector2Int pos;
         int width;
-        Pair<int, string>[,] map = new Pair<int, string>[8, 8];
+        int sqWidth;
+        Pair<int, Piece>[,] map = new Pair<int, Piece>[8, 8];
         List<Piece> pieces = new List<Piece>();
         private readonly string StartingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         private readonly string basePath = "Sprites/";
         // Dictionary<string, Image> images = new Dictionary<string, Image>();
-        readonly string[] pieceSymbols = new string[] {"P", "B", "N", "R", "Q", "K"};
 
         public ChessBoard(int width, Vector2Int pos)
         {
             this.width = width;
             this.pos = pos;
+            sqWidth = (int)(width / 8.0f);
 
             StartBoard();
             FENStringConverter(StartingFEN);
@@ -48,8 +49,6 @@ namespace ChessButCool
 
         public void Draw()
         {
-            int sqWidth = (int)(width / 8.0f);
-
             for (int y = 0; y < map.GetLength(1); y++)
             {
                 for (int x = 0; x < map.GetLength(0); x++)
@@ -93,7 +92,15 @@ namespace ChessButCool
         {
             if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
             {
+                Vector2Int mousepos = new Vector2Int(Raylib.GetMousePosition());
                 
+                if (mousepos.X > pos.X && mousepos.X < (pos.X + width) && mousepos.Y > pos.Y && mousepos.Y < (pos.Y + width))
+                {
+                    int mapX = (mousepos.X - pos.X) / sqWidth;
+                    int mapY = (mousepos.Y - pos.Y) / sqWidth;
+
+                    // bruh orkar inte
+                }
             }
         }
 
@@ -135,14 +142,14 @@ namespace ChessButCool
                 {
                     if ((x % 2 == 0 && y % 2 == 0) || (x % 2 == 1 && y % 2 == 1)) // if white square
                     {
-                        Pair<int, string> pair = new();
+                        Pair<int, Piece> pair = new();
                         pair.SetValue(0, "");
 
                         map[x, y] = pair;
                     }
                     else // if not black square
                     {
-                        Pair<int, string> pair = new();
+                        Pair<int, Piece> pair = new();
                         pair.SetValue(1, "");
 
                         map[x, y] = pair;

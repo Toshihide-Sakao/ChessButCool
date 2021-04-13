@@ -9,6 +9,7 @@ namespace ChessButCool.Pieces
 		protected SideColor side;
 		protected Vector2Int position;
 		protected List<Vector2Int> moves;
+		private string pieceType = "";
 
 		public SideColor Side
 		{
@@ -34,10 +35,37 @@ namespace ChessButCool.Pieces
 			}
 		}
 
+		public string PieceType
+		{
+			get { return pieceType; }
+			set { pieceType = value; }
+		}
+
 		public abstract void Move();
 
 		public abstract void ShowMoves();
 		protected abstract void ListAllMoves();
+
+		public static Piece GetPieceFromPieceType(string type, Vector2Int pos)
+		{
+			switch (type[1])
+			{
+				case 'P':
+					return new Pawn(pos, (SideColor)int.Parse(type[0].ToString()));
+				case 'B':
+					return new Bishop(pos, (SideColor)int.Parse(type[0].ToString()));
+				case 'N':
+					return new Knight(pos, (SideColor)int.Parse(type[0].ToString()));
+				case 'R':
+					return new Rook(pos, (SideColor)int.Parse(type[0].ToString()));
+				case 'Q':
+					return new Queen(pos, (SideColor)int.Parse(type[0].ToString()));
+				case 'K':
+					return new King(pos, (SideColor)int.Parse(type[0].ToString()));
+				default:
+					return ;
+			}
+		}
 
 		protected void AddRookMoves()
 		{

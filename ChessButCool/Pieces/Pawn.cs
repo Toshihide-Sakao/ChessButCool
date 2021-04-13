@@ -10,6 +10,7 @@ namespace ChessButCool.Pieces
         {
             this.position = position;
             this.side = side;
+            PieceType = side + "P";
         }
 
         public override void Move()
@@ -21,6 +22,8 @@ namespace ChessButCool.Pieces
         {
 
         }
+
+        
 
         protected override void ListAllMoves()
         {
