@@ -32,6 +32,7 @@ namespace ChessButCool
                 // draw bg
                 Raylib.ClearBackground(new Color(163, 163, 163, 255));
 
+                board.Update();
                 board.Draw();
 
                 // ends drawing

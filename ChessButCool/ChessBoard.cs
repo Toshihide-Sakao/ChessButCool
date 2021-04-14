@@ -14,7 +14,6 @@ namespace ChessButCool
         List<Piece> pieces = new List<Piece>();
         private readonly string StartingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         private readonly string basePath = "Sprites/";
-        // Dictionary<string, Image> images = new Dictionary<string, Image>();
 
         public ChessBoard(int width, Vector2Int pos)
         {
@@ -24,15 +23,6 @@ namespace ChessButCool
 
             StartBoard();
             FENStringConverter(StartingFEN);
-
-            // for (int q = 0; q < 2; q++)
-            // {
-            //     foreach (string item in pieceSymbols)
-            //     {
-            //         Image sprite = Raylib.LoadImage(basePath + q.ToString() + item + ".png");
-            //         images.Add(q.ToString() + item, sprite);
-            //     }
-            // }
         }
 
         // public void DeBuggerBoard()
@@ -67,27 +57,22 @@ namespace ChessButCool
                     }
                     if (!map[x, y].GetnoVal2())
                     {
-                        // if (map[x, y].Value2.GetType() !is Dummy)
-                        // {
-                            string path = basePath + map[x, y].Value2.PieceType + ".png";
-                            Image piece = Raylib.LoadImage(path);
-                            // Image piece = images[map[x, y].Value2];
-                            Raylib.ImageResize(ref piece, sqWidth, sqWidth);
-                            Texture2D texture = Raylib.LoadTextureFromImage(piece);
-                            Raylib.DrawTexture(texture, xPos, yPos, Color.WHITE);
+                        string path = basePath + map[x, y].Value2.PieceType + ".png";
+                        Image piece = Raylib.LoadImage(path);
+                        // Image piece = images[map[x, y].Value2];
+                        Raylib.ImageResize(ref piece, sqWidth, sqWidth);
+                        Texture2D texture = Raylib.LoadTextureFromImage(piece);
+                        Raylib.DrawTexture(texture, xPos, yPos, Color.WHITE);
 
-                            Raylib.UnloadImage(piece);
-                        // }
+                        Raylib.UnloadImage(piece);
                     }
-
-
                 }
             }
         }
 
         public void Update()
         {
-
+            Clicked();
         }
 
         // Fix Click method
@@ -102,7 +87,14 @@ namespace ChessButCool
                     int mapX = (mousepos.X - pos.X) / sqWidth;
                     int mapY = (mousepos.Y - pos.Y) / sqWidth;
 
+                    Console.WriteLine(mapX + ", " + mapY);
+
                     // bruh orkar inte
+                    if (!map[mapX, mapY].GetnoVal2())
+                    {
+                        map[mapX, mapY].Value2.ShowMoves();
+                    }
+
                 }
             }
         }
