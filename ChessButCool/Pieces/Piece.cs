@@ -54,6 +54,7 @@ namespace ChessButCool.Pieces
 
 		protected abstract void ListAllMoves();
 
+		// FIXME: move into chessboard this can be the problem 
 		public static Piece GetPieceFromPieceType(string type, Vector2Int pos)
 		{
 			switch (type[1])
