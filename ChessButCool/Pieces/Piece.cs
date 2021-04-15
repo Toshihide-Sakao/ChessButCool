@@ -60,17 +60,17 @@ namespace ChessButCool.Pieces
 			switch (type[1])
 			{
 				case 'P':
-					return new Pawn(pos, (SideColor)int.Parse(type[0].ToString()));
+					return new Pawn(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()));
 				case 'B':
-					return new Bishop(pos, (SideColor)int.Parse(type[0].ToString()));
+					return new Bishop(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()));
 				case 'N':
-					return new Knight(pos, (SideColor)int.Parse(type[0].ToString()));
+					return new Knight(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()));
 				case 'R':
-					return new Rook(pos, (SideColor)int.Parse(type[0].ToString()));
+					return new Rook(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()));
 				case 'Q':
-					return new Queen(pos, (SideColor)int.Parse(type[0].ToString()));
+					return new Queen(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()));
 				case 'K':
-					return new King(pos, (SideColor)int.Parse(type[0].ToString()));
+					return new King(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()));
 				default:
 					return new Dummy();
 			}
