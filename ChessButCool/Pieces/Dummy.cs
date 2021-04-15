@@ -14,11 +14,6 @@ namespace ChessButCool.Pieces
 
 		}
 
-		public override void ShowMoves()
-		{
-
-		}
-
 		protected override void ListAllMoves()
         {
 			

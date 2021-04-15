@@ -7,16 +7,11 @@ namespace ChessButCool.Pieces
 	{
 		public Queen(Vector2Int position, SideColor side)
         {
-            this.position = position;
+            Position = position;
             this.side = side;
 			PieceType = ((int)side).ToString() + "Q";
         }
 		public override void Move()
-		{
-
-		}
-
-		public override void ShowMoves()
 		{
 
 		}

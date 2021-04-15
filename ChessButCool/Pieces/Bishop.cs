@@ -7,17 +7,12 @@ namespace ChessButCool.Pieces
 	{
 		public Bishop(Vector2Int position, SideColor side)
         {
-            this.position = position;
+            this.Position = position;
             this.side = side;
 			PieceType = ((int)side).ToString() + "B";
         }
 
 		public override void Move()
-		{
-
-		}
-
-		public override void ShowMoves()
 		{
 
 		}

@@ -10,7 +10,7 @@ namespace ChessButCool
         Vector2Int pos;
         int width;
         int sqWidth;
-        Pair<int, Piece>[,] map = new Pair<int, Piece>[8, 8];
+        Triple<int, int, Piece>[,] map = new Triple<int, int, Piece>[8, 8];
         List<Piece> pieces = new List<Piece>();
         private readonly string StartingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         private readonly string basePath = "Sprites/";
@@ -25,17 +25,20 @@ namespace ChessButCool
             FENStringConverter(StartingFEN);
         }
 
-        // public void DeBuggerBoard()
-        // {
-        //     for (int y = 0; y < map.GetLength(1); y++)
-        //     {
-        //         for (int x = 0; x < map.GetLength(0); x++)
-        //         {
-        //             Console.Write(map[x, y].Value2);
-        //         }
-        //         Console.Write("\n");
-        //     }
-        // }
+        public void DeBuggerBoard()
+        {
+            for (int y = 0; y < map.GetLength(1); y++)
+            {
+                for (int x = 0; x < map.GetLength(0); x++)
+                {
+                    if (!map[x, y].GetnoVal3())
+                    {
+                        Console.Write(map[x, y].Value3.Position.X + "," + map[x, y].Value3.Position.Y + " ");
+                    }
+                }
+                Console.Write("\n");
+            }
+        }
 
         public void Draw()
         {
@@ -47,19 +50,25 @@ namespace ChessButCool
                     int yPos = ((sqWidth * y)) + (int)pos.Y;
 
                     // Drawing Colors
-                    if (map[x, y].Value1 == 0)
+                    if (map[x, y].Value1 == 0) // if place is white
                     {
                         Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, Color.WHITE);
                     }
-                    else
+                    else // if place is black
                     {
                         Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(29, 112, 89, 255));
                     }
-                    if (!map[x, y].GetnoVal2())
+
+                    if (map[x, y].Value2 == 1) // if you can move to place
                     {
-                        string path = basePath + map[x, y].Value2.PieceType + ".png";
+                        Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(118, 135, 57, (int)(0.6f * 255)));
+                    }
+
+                    if (!map[x, y].GetnoVal3()) // if piece exists on position
+                    {
+                        // image loading
+                        string path = basePath + map[x, y].Value3.PieceType + ".png";
                         Image piece = Raylib.LoadImage(path);
-                        // Image piece = images[map[x, y].Value2];
                         Raylib.ImageResize(ref piece, sqWidth, sqWidth);
                         Texture2D texture = Raylib.LoadTextureFromImage(piece);
                         Raylib.DrawTexture(texture, xPos, yPos, Color.WHITE);
@@ -70,9 +79,30 @@ namespace ChessButCool
             }
         }
 
+        public bool CheckIFPOSISBRUH()
+        {
+            for (int y = 0; y < map.GetLength(1); y++)
+            {
+                for (int x = 0; x < map.GetLength(0); x++)
+                {
+                    if (!map[x, y].GetnoVal3())
+                    {
+                        if (map[x, y].Value3.Position.X == 8 && map[x, y].Value3.Position.Y == 7)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public void Update()
         {
             Clicked();
+            if (CheckIFPOSISBRUH())
+                System.Console.WriteLine("ok");
         }
 
         // Fix Click method
@@ -90,11 +120,10 @@ namespace ChessButCool
                     Console.WriteLine(mapX + ", " + mapY);
 
                     // bruh orkar inte
-                    if (!map[mapX, mapY].GetnoVal2())
+                    if (!map[mapX, mapY].GetnoVal3())
                     {
-                        map[mapX, mapY].Value2.ShowMoves();
+                        map[mapX, mapY].Value3.ShowMoves(map);
                     }
-
                 }
             }
         }
@@ -114,19 +143,23 @@ namespace ChessButCool
                 {
                     if (char.IsDigit(item))
                     {
-                        currentPos.X += (int)char.GetNumericValue(item);
+                        currentPos.X += (int)char.GetNumericValue(item) - 1;
                     }
                     else if (char.IsUpper(item))
                     {
-
-                        map[currentPos.X, currentPos.Y].Value2 = Piece.GetPieceFromPieceType("0" + item.ToString().ToUpper(), currentPos);
+                        map[currentPos.X, currentPos.Y].Value3 = Piece.GetPieceFromPieceType("0" + item.ToString().ToUpper(), currentPos);
                     }
                     else
                     {
-                        map[currentPos.X, currentPos.Y].Value2 = Piece.GetPieceFromPieceType("1" + item.ToString().ToUpper(), currentPos);
+                        map[currentPos.X, currentPos.Y].Value3 = Piece.GetPieceFromPieceType("1" + item.ToString().ToUpper(), currentPos);
                     }
-                    currentPos.X++;
+
+                    if (!char.IsDigit(item) && currentPos.X < 8)
+                    {
+                        currentPos.X++;
+                    }
                 }
+
             }
         }
 
@@ -138,19 +171,18 @@ namespace ChessButCool
                 {
                     if ((x % 2 == 0 && y % 2 == 0) || (x % 2 == 1 && y % 2 == 1)) // if white square
                     {
-                        Pair<int, Piece> pair = new();
-                        pair.SetValue(0);
+                        Triple<int, int, Piece> triple = new();
+                        triple.SetValue(0, 0);
 
-                        map[x, y] = pair;
+                        map[x, y] = triple;
                     }
                     else // if not black square
                     {
-                        Pair<int, Piece> pair = new();
-                        pair.SetValue(1);
+                        Triple<int, int, Piece> triple = new();
+                        triple.SetValue(1, 0);
 
-                        map[x, y] = pair;
+                        map[x, y] = triple;
                     }
-
                 }
             }
         }

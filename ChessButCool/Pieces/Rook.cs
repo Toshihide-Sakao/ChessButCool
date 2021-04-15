@@ -7,17 +7,12 @@ namespace ChessButCool.Pieces
 	{
 		public Rook(Vector2Int position, SideColor side)
         {
-            this.position = position;
+            this.Position = position;
             this.side = side;
 			PieceType = ((int)side).ToString() + "R";
         }
 
 		public override void Move()
-		{
-
-		}
-
-		public override void ShowMoves()
 		{
 
 		}

@@ -8,7 +8,7 @@ namespace ChessButCool.Pieces
 
         public Pawn(Vector2Int position, SideColor side)
         {
-            this.position = position;
+            Position = position;
             this.side = side;
             PieceType = ((int)side).ToString() + "P";
         }
@@ -18,15 +18,10 @@ namespace ChessButCool.Pieces
 
         }
 
-        public override void ShowMoves()
-        {
-
-        }
-
-        
-
         protected override void ListAllMoves()
         {
+            moves = new List<Vector2Int>();
+
             if (FirstMove()) // If first time moving, give them the choice to move 2 steps. 
             {
                 moves.Add(new Vector2Int(0, 2));
@@ -39,7 +34,7 @@ namespace ChessButCool.Pieces
             {
                 moves.Add(new Vector2Int(1, 1));
             }
-            moves.Add(new Vector2Int(1, 0));
+            moves.Add(new Vector2Int(0, 1));
 
             if (side == SideColor.White) // If white, reverse y axis so pawns go towards black
             {
@@ -52,11 +47,11 @@ namespace ChessButCool.Pieces
 
         private bool FirstMove()
         {
-            if (position.Y == 1 && side == SideColor.Black)
+            if (Position.Y == 1 && side == SideColor.Black)
             {
                 return true;
             }
-            else if (position.Y == 6 && side == SideColor.White)
+            else if (Position.Y == 6 && side == SideColor.White)
             {
                 return true;
             }

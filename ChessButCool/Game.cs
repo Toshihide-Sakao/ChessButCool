@@ -22,7 +22,7 @@ namespace ChessButCool
             // generate chessboard
             ChessBoard board = new ChessBoard(700, new Vector2Int(150, 50));
 
-            // board.DeBuggerBoard();
+            board.DeBuggerBoard();
 
             // update function
             while (!Raylib.WindowShouldClose())

@@ -7,7 +7,7 @@ namespace ChessButCool.Pieces
 	public abstract class Piece
 	{
 		protected SideColor side;
-		protected Vector2Int position;
+		private Vector2Int position;
 		protected List<Vector2Int> moves;
 		private string pieceType = "";
 
@@ -29,7 +29,7 @@ namespace ChessButCool.Pieces
 			{
 				return position;
 			}
-			set
+			protected set
 			{
 				position = value;
 			}
@@ -42,8 +42,16 @@ namespace ChessButCool.Pieces
 		}
 
 		public abstract void Move();
+		public void ShowMoves(Triple<int, int, Piece>[,] map)
+		{
+			ListAllMoves();
 
-		public abstract void ShowMoves();
+			foreach (var item in moves)
+			{
+				map[position.X + item.X, position.Y + item.Y].Value2 = 1;
+			}
+		}
+
 		protected abstract void ListAllMoves();
 
 		public static Piece GetPieceFromPieceType(string type, Vector2Int pos)
@@ -96,7 +104,6 @@ namespace ChessButCool.Pieces
 				{
 					moves.Add(new Vector2Int(q));
 				}
-				
 			}
 		}
 	}
