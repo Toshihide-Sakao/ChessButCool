@@ -40,6 +40,7 @@ namespace ChessButCool.Pieces
 			get { return pieceType; }
 			set { pieceType = value; }
 		}
+		public abstract Vector2Int GetPieceNumbers();
 
 		public abstract void Move();
 		public void ShowMoves(Triple<int, int, Piece>[,] map)
@@ -54,7 +55,7 @@ namespace ChessButCool.Pieces
 
 		protected abstract void ListAllMoves();
 
-		// FIXME: move into chessboard this can be the problem 
+		// FIXME: move into chessboard this can be the problem (can be ignored)
 		public static Piece GetPieceFromPieceType(string type, Vector2Int pos)
 		{
 			switch (type[1])
@@ -72,7 +73,7 @@ namespace ChessButCool.Pieces
 				case 'K':
 					return new King(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()));
 				default:
-					return new Dummy();
+					throw new ArgumentException("that piece does not exist");
 			}
 		}
 

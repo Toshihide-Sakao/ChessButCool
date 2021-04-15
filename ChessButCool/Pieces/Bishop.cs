@@ -22,5 +22,10 @@ namespace ChessButCool.Pieces
 			base.AddBishopMoves();
 		}
 
+		public override Vector2Int GetPieceNumbers()
+        {
+            return new Vector2Int((int)side, 2); 
+        }
+
 	}
 }

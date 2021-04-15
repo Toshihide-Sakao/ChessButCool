@@ -21,5 +21,10 @@ namespace ChessButCool.Pieces
         {
 			base.AddRookMoves();
 		}
+
+		public override Vector2Int GetPieceNumbers()
+        {
+            return new Vector2Int((int)side, 3); 
+        }
 	}
 }

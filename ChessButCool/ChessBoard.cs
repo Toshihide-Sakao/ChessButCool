@@ -15,16 +15,20 @@ namespace ChessButCool
         private readonly string StartingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         private readonly string basePath = "Sprites/";
 
+        Image[][] imageArray;
+
         public ChessBoard(int width, Vector2Int pos)
         {
             this.width = width;
             this.pos = pos;
             sqWidth = (int)(width / 8.0f);
-
-            StartBoard();
-            FENStringConverter(StartingFEN);
+            
+            StartBoard(); // Creating board checkred board
+            FENStringConverter(StartingFEN); // puts pieces in starting position
+            LoadImages(); // Loading all images
         }
-
+        
+        // debug ----------------------
         public void DeBuggerBoard()
         {
             for (int y = 0; y < map.GetLength(1); y++)
@@ -39,6 +43,24 @@ namespace ChessButCool
                 Console.Write("\n");
             }
         }
+        // -----------------------------
+
+        public void LoadImages() // Loads all piece images
+        {
+            imageArray = new Image[2][];
+            for (int i = 0; i < 2; i++)
+            {
+                imageArray[i] = new Image[]
+                {
+                    Raylib.LoadImage(basePath + i.ToString() + "P" + ".png"),
+                    Raylib.LoadImage(basePath + i.ToString() + "N" + ".png"),
+                    Raylib.LoadImage(basePath + i.ToString() + "B" + ".png"),
+                    Raylib.LoadImage(basePath + i.ToString() + "R" + ".png"),
+                    Raylib.LoadImage(basePath + i.ToString() + "Q" + ".png"),
+                    Raylib.LoadImage(basePath + i.ToString() + "K" + ".png"),
+                };
+            }
+        }
 
         public void Draw()
         {
@@ -46,6 +68,7 @@ namespace ChessButCool
             {
                 for (int x = 0; x < map.GetLength(0); x++)
                 {
+                    // Calculates position of where to draw.
                     int xPos = ((sqWidth * x)) + (int)pos.X;
                     int yPos = ((sqWidth * y)) + (int)pos.Y;
 
@@ -66,46 +89,29 @@ namespace ChessButCool
 
                     if (!map[x, y].GetnoVal3()) // if piece exists on position
                     {
-                        // image loading
-                        string path = basePath + map[x, y].Value3.PieceType + ".png";
-                        Image piece = Raylib.LoadImage(path);
-                        Raylib.ImageResize(ref piece, sqWidth, sqWidth);
-                        Texture2D texture = Raylib.LoadTextureFromImage(piece);
+                        // Gets piece values which is used to find which sprite to draw.
+                        Vector2Int val = map[x, y].Value3.GetPieceNumbers();
+                        // makes texture from loaded image in array
+                        Texture2D texture = Raylib.LoadTextureFromImage(imageArray[val.X][val.Y]);
+
+                        // fixes width and height of texture
+                        texture.width = sqWidth;
+                        texture.height = sqWidth;
+
+                        // draws texture.
                         Raylib.DrawTexture(texture, xPos, yPos, Color.WHITE);
-
-                        Raylib.UnloadImage(piece);
                     }
                 }
             }
         }
 
-        public bool CheckIFPOSISBRUH()
-        {
-            for (int y = 0; y < map.GetLength(1); y++)
-            {
-                for (int x = 0; x < map.GetLength(0); x++)
-                {
-                    if (!map[x, y].GetnoVal3())
-                    {
-                        if (map[x, y].Value3.Position.X == 8 && map[x, y].Value3.Position.Y == 7)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
+        // Update command which checks for user inputs
         public void Update()
         {
             Clicked();
-            if (CheckIFPOSISBRUH())
-                System.Console.WriteLine("ok");
         }
 
-        // Fix Click method
+        // FIXME: Make so last piece clicked gets unclicked.
         public void Clicked()
         {
             if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
@@ -128,6 +134,7 @@ namespace ChessButCool
             }
         }
 
+        // Method for converting FENstring to the map array.
         private void FENStringConverter(string fen)
         {
             Vector2Int currentPos = new Vector2Int(0, 0);
@@ -163,6 +170,7 @@ namespace ChessButCool
             }
         }
 
+        // Creating a checkred boared
         private void StartBoard()
         {
             for (int y = 0; y < map.GetLength(1); y++)

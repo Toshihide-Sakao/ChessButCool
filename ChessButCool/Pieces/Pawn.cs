@@ -81,5 +81,10 @@ namespace ChessButCool.Pieces
 
             return false; // Can't take pieces to the right
         }
+
+        public override Vector2Int GetPieceNumbers()
+        {
+            return new Vector2Int((int)side, 0); 
+        }
     }
 }
