@@ -76,7 +76,8 @@ namespace ChessButCool.Pieces
 					throw new ArgumentException("that piece does not exist");
 			}
 		}
-
+		
+		// FIXME: fix these
 		protected void AddRookMoves()
 		{
 			// adding all possible x routes (as a rook)
@@ -97,6 +98,7 @@ namespace ChessButCool.Pieces
 			}
 		}
 
+		// FIXME: fix these
 		protected void AddBishopMoves()
 		{
 			// adding all possible diagonal (as a bishop)
