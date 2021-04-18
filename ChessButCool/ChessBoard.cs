@@ -116,6 +116,7 @@ namespace ChessButCool
         {
             if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
             {
+                UnClick();
                 Vector2Int mousepos = new Vector2Int(Raylib.GetMousePosition());
 
                 if (mousepos.X > pos.X && mousepos.X < (pos.X + width) && mousepos.Y > pos.Y && mousepos.Y < (pos.Y + width))
@@ -136,7 +137,13 @@ namespace ChessButCool
 
         private void UnClick()
         {
-            
+            for (int y = 0; y < map.GetLength(1); y++)
+            {
+                for (int x = 0; x < map.GetLength(0); x++)
+                {
+                    map[x, y].Value2 = 0;
+                }
+            }
         }
 
         // Method for converting FENstring to the map array.

@@ -8,7 +8,7 @@ namespace ChessButCool.Pieces
 	{
 		protected SideColor side;
 		private Vector2Int position;
-		protected List<Vector2Int> moves;
+		protected List<Vector2Int> moves = new();
 		private string pieceType = "";
 
 		public SideColor Side
