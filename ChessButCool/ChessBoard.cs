@@ -112,7 +112,7 @@ namespace ChessButCool
         }
 
         // FIXME: Make so last piece clicked gets unclicked.
-        public void Clicked()
+        private void Clicked()
         {
             if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
             {
@@ -132,6 +132,11 @@ namespace ChessButCool
                     }
                 }
             }
+        }
+
+        private void UnClick()
+        {
+            
         }
 
         // Method for converting FENstring to the map array.
