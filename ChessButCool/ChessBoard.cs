@@ -111,11 +111,11 @@ namespace ChessButCool
             Clicked();
         }
 
-        // FIXME: Make so last piece clicked gets unclicked.
         private void Clicked()
         {
             if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
             {
+                // Resets highlighted positions
                 UnClick();
                 Vector2Int mousepos = new Vector2Int(Raylib.GetMousePosition());
 
