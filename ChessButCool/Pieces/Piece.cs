@@ -57,9 +57,8 @@ namespace ChessButCool.Pieces
 		protected abstract void ListAllMoves();
 		protected void FilterMoves()
 		{
-			moves.RemoveAll(item => item.X >= 8 || item.X < 0 || item.Y >= 8 || item.Y < 0);
-			var nodupeMoves = moves.Distinct();
-			Console.WriteLine("bruh");
+			moves.RemoveAll(item => item.X >= 8 - Position.X || item.X < 0 - Position.X || item.Y >= 8 - Position.Y || item.Y < 0  - Position.Y );
+			// var nodupeMoves = moves.Distinct();
 		}
 
 		// FIXME: move into chessboard this can be the problem (can be ignored)
@@ -90,12 +89,14 @@ namespace ChessButCool.Pieces
 			// adding all possible x routes (as a rook)
 			for (int x = -7; x < 8; x++)
 			{
-				moves.Add(new Vector2Int(x, 0));
+				if (x != 0)
+					moves.Add(new Vector2Int(x, 0));
 			}
 			// adding all possible y routes (as a rook)
 			for (int y = -7; y < 8; y++)
 			{
-				moves.Add(new Vector2Int(0, y));
+				if (y != 0)
+					moves.Add(new Vector2Int(0, y));
 			}
 		}
 
