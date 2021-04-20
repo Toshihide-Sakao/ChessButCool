@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using ChessButCool;
 
@@ -54,6 +55,12 @@ namespace ChessButCool.Pieces
 		}
 
 		protected abstract void ListAllMoves();
+		protected void FilterMoves()
+		{
+			moves.RemoveAll(item => item.X >= 8 || item.X < 0 || item.Y >= 8 || item.Y < 0);
+			var nodupeMoves = moves.Distinct();
+			Console.WriteLine("bruh");
+		}
 
 		// FIXME: move into chessboard this can be the problem (can be ignored)
 		public static Piece GetPieceFromPieceType(string type, Vector2Int pos)
@@ -81,20 +88,14 @@ namespace ChessButCool.Pieces
 		protected void AddRookMoves()
 		{
 			// adding all possible x routes (as a rook)
-			for (int x = -position.X; x < (-position.X) + 8; x++)
+			for (int x = -7; x < 8; x++)
 			{
-				if (x != position.X || !moves.Contains(new Vector2Int(x, 0)))
-				{
-					moves.Add(new Vector2Int(x, 0));
-				}
+				moves.Add(new Vector2Int(x, 0));
 			}
 			// adding all possible y routes (as a rook)
-			for (int y = -position.Y; y < (-position.Y) + 8; y++)
+			for (int y = -7; y < 8; y++)
 			{
-				if (y != position.Y || !moves.Contains(new Vector2Int(0, y)))
-				{
-					moves.Add(new Vector2Int(0, y));
-				}
+				moves.Add(new Vector2Int(0, y));
 			}
 		}
 
@@ -102,7 +103,7 @@ namespace ChessButCool.Pieces
 		protected void AddBishopMoves()
 		{
 			// adding all possible diagonal (as a bishop)
-			for (int q = -8; q < 8; q++)
+			for (int q = -7; q < 8; q++)
 			{
 				if (new Vector2Int(q) != position || !moves.Contains(new Vector2Int(q)))
 				{

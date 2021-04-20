@@ -43,6 +43,8 @@ namespace ChessButCool.Pieces
 					item.Multiply(new Vector2Int(1, -1));
 				}
             }
+
+            FilterMoves();
         }
 
         private bool FirstMove()

@@ -20,6 +20,7 @@ namespace ChessButCool.Pieces
 		protected override void ListAllMoves()
         {
 			base.AddRookMoves();
+			FilterMoves();
 		}
 
 		public override Vector2Int GetPieceNumbers()

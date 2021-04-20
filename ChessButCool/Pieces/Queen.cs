@@ -20,6 +20,8 @@ namespace ChessButCool.Pieces
         {
 			base.AddRookMoves();
 			base.AddBishopMoves();
+
+			FilterMoves();
 		}
 
 		public override Vector2Int GetPieceNumbers()
