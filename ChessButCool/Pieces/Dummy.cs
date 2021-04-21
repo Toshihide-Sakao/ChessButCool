@@ -9,7 +9,7 @@ namespace ChessButCool.Pieces
 
         }
 
-        public override void Move()
+        public override void Move(Vector2Int targetPos)
 		{
 
 		}

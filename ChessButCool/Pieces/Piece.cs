@@ -1,3 +1,4 @@
+using System.Numerics;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace ChessButCool.Pieces
 		}
 		public abstract Vector2Int GetPieceNumbers();
 
-		public abstract void Move();
+		public abstract void Move(Vector2Int targetPos);
 		public void ShowMoves(Triple<int, int, Piece>[,] map)
 		{
 			ListAllMoves();
@@ -55,7 +56,7 @@ namespace ChessButCool.Pieces
 		}
 
 		protected abstract void ListAllMoves();
-		protected void FilterMoves()
+		protected virtual void FilterMoves()
 		{
 			moves.RemoveAll(item => item.X >= 8 - Position.X || item.X < 0 - Position.X || item.Y >= 8 - Position.Y || item.Y < 0  - Position.Y );
 			// var nodupeMoves = moves.Distinct();
@@ -106,9 +107,10 @@ namespace ChessButCool.Pieces
 			// adding all possible diagonal (as a bishop)
 			for (int q = -7; q < 8; q++)
 			{
-				if (new Vector2Int(q) != position || !moves.Contains(new Vector2Int(q)))
+				if (q != 0)
 				{
 					moves.Add(new Vector2Int(q));
+					moves.Add(new Vector2Int(q, -q));
 				}
 			}
 		}

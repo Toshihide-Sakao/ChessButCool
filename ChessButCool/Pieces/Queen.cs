@@ -11,7 +11,7 @@ namespace ChessButCool.Pieces
             this.side = side;
 			PieceType = ((int)side).ToString() + "Q";
         }
-		public override void Move()
+		public override void Move(Vector2Int targetPos)
 		{
 
 		}

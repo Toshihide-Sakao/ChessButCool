@@ -16,12 +16,14 @@ namespace ChessButCool
         private readonly string basePath = "Sprites/";
 
         Image[][] imageArray;
+        Pair<bool, Piece> ShowingMoves = new Pair<bool, Piece>();
 
         public ChessBoard(int width, Vector2Int pos)
         {
             this.width = width;
             this.pos = pos;
             sqWidth = (int)(width / 8.0f);
+            ShowingMoves.SetValue(false);
             
             StartBoard(); // Creating board checkred board
             FENStringConverter(StartingFEN); // puts pieces in starting position
@@ -109,6 +111,7 @@ namespace ChessButCool
         public void Update()
         {
             Clicked();
+            ChooseMove();
         }
 
         private void Clicked()
@@ -124,15 +127,36 @@ namespace ChessButCool
                     int mapX = (mousepos.X - pos.X) / sqWidth;
                     int mapY = (mousepos.Y - pos.Y) / sqWidth;
 
-                    Console.WriteLine(mapX + ", " + mapY);
-
                     // bruh orkar inte
                     if (!map[mapX, mapY].GetnoVal3())
                     {
                         map[mapX, mapY].Value3.ShowMoves(map);
+                        ShowingMoves.SetValue(true, map[mapX, mapY].Value3);
                     }
                 }
             }
+        }
+
+        private void ChooseMove()
+        {
+            if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON) && ShowingMoves.Value1)
+            {
+                Vector2Int mousepos = new Vector2Int(Raylib.GetMousePosition());
+
+                if (mousepos.X > pos.X && mousepos.X < (pos.X + width) && mousepos.Y > pos.Y && mousepos.Y < (pos.Y + width))
+                {
+                    int mapX = (mousepos.X - pos.X) / sqWidth;
+                    int mapY = (mousepos.Y - pos.Y) / sqWidth;
+
+                    ShowingMoves.Value2.Move(new Vector2Int(mapX, mapY));
+                }
+            }
+        }
+
+        // TODO: Make a method for updating the map array!!!
+        private void UpdateMap()
+        {
+
         }
 
         private void UnClick()
