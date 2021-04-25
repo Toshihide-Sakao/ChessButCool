@@ -20,7 +20,8 @@ namespace ChessButCool
             Raylib.InitWindow(width, height, "Chess");
 
             // generate chessboard
-            ChessBoard board = new ChessBoard(700, new Vector2Int(150, 50));
+            ChessBoard board = new ChessBoard(700, new Vector2Int(50, 50));
+            UI ui = new UI(150, 700, new Vector2Int(775, 50));
 
             board.DeBuggerBoard();
 
@@ -34,6 +35,8 @@ namespace ChessButCool
 
                 board.Update();
                 board.Draw();
+
+                ui.Draw();
 
                 // ends drawing
                 Raylib.EndDrawing();
