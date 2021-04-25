@@ -14,6 +14,7 @@ namespace ChessButCool
         List<Piece> pieces = new List<Piece>();
         private readonly string StartingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         private readonly string basePath = "Sprites/";
+        int turn = 0;
 
         Image[][] imageArray;
         Pair<bool, Piece> ShowingMoves = new Pair<bool, Piece>();
@@ -24,12 +25,12 @@ namespace ChessButCool
             this.pos = pos;
             sqWidth = (int)(width / 8.0f);
             ShowingMoves.SetValue(false);
-            
+
             StartBoard(); // Creating board checkred board
             FENStringConverter(StartingFEN); // puts pieces in starting position
             LoadImages(); // Loading all images
         }
-        
+
         // debug ----------------------
         public void DeBuggerBoard()
         {
@@ -37,7 +38,7 @@ namespace ChessButCool
             {
                 for (int x = 0; x < map.GetLength(0); x++)
                 {
-                    if (!map[x, y].GetnoVal3())
+                    if (!map[x, y].NoVal3)
                     {
                         Console.Write(map[x, y].Value3.Position.X + "," + map[x, y].Value3.Position.Y + " ");
                     }
@@ -89,7 +90,7 @@ namespace ChessButCool
                         Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(118, 135, 57, (int)(0.6f * 255)));
                     }
 
-                    if (!map[x, y].GetnoVal3()) // if piece exists on position
+                    if (!map[x, y].NoVal3) // if piece exists on position
                     {
                         // Gets piece values which is used to find which sprite to draw.
                         Vector2Int val = map[x, y].Value3.GetPieceNumbers();
@@ -128,10 +129,14 @@ namespace ChessButCool
                     int mapY = (mousepos.Y - pos.Y) / sqWidth;
 
                     // bruh orkar inte
-                    if (!map[mapX, mapY].GetnoVal3())
+                    if (!map[mapX, mapY].NoVal3)
                     {
-                        map[mapX, mapY].Value3.ShowMoves(map);
-                        ShowingMoves.SetValue(true, map[mapX, mapY].Value3);
+                        if (turn % 2 == (int)map[mapX, mapY].Value3.Side)
+                        {
+                            map[mapX, mapY].Value3.ShowMoves();
+                            ShowingMoves.SetValue(true, map[mapX, mapY].Value3);
+                        }
+
                     }
                 }
             }
@@ -148,15 +153,15 @@ namespace ChessButCool
                     int mapX = (mousepos.X - pos.X) / sqWidth;
                     int mapY = (mousepos.Y - pos.Y) / sqWidth;
 
-                    ShowingMoves.Value2.Move(new Vector2Int(mapX, mapY));
+                    bool moved = ShowingMoves.Value2.Move(new Vector2Int(mapX, mapY));
+
+                    // add turn
+                    if (moved)
+                    {
+                        turn++;
+                    }
                 }
             }
-        }
-
-        // TODO: Make a method for updating the map array!!!
-        private void UpdateMap()
-        {
-
         }
 
         private void UnClick()
@@ -190,12 +195,13 @@ namespace ChessButCool
                     }
                     else if (char.IsUpper(item))
                     {
-                        map[currentPos.X, currentPos.Y].Value3 = Piece.GetPieceFromPieceType("0" + item.ToString().ToUpper(), currentPos);
+                        map[currentPos.X, currentPos.Y].Value3 = Piece.GetPieceFromPieceType("0" + item.ToString().ToUpper(), currentPos, this);
                     }
                     else
                     {
-                        map[currentPos.X, currentPos.Y].Value3 = Piece.GetPieceFromPieceType("1" + item.ToString().ToUpper(), currentPos);
+                        map[currentPos.X, currentPos.Y].Value3 = Piece.GetPieceFromPieceType("1" + item.ToString().ToUpper(), currentPos, this);
                     }
+                    pieces.Add(map[currentPos.X, currentPos.Y].Value3);
 
                     if (!char.IsDigit(item) && currentPos.X < 8)
                     {
@@ -229,6 +235,11 @@ namespace ChessButCool
                     }
                 }
             }
+        }
+
+        public Triple<int, int, Piece>[,] GetMap()
+        {
+            return map;
         }
     }
 }

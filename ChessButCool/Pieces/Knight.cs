@@ -5,16 +5,12 @@ namespace ChessButCool.Pieces
 {
     public class Knight : Piece
     {
-        public Knight(Vector2Int position, SideColor side)
+        public Knight(Vector2Int position, SideColor side, ChessBoard board)
         {
             this.Position = position;
             this.side = side;
+            this.board = board;
             PieceType = ((int)side).ToString() + "N";
-        }
-
-        public override void Move(Vector2Int targetPos)
-        {
-
         }
 
         protected override void ListAllMoves()

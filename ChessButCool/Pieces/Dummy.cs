@@ -9,11 +9,6 @@ namespace ChessButCool.Pieces
 
         }
 
-        public override void Move(Vector2Int targetPos)
-		{
-
-		}
-
 		protected override void ListAllMoves()
         {
 			

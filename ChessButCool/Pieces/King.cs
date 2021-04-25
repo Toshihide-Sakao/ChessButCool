@@ -5,17 +5,13 @@ namespace ChessButCool.Pieces
 {
 	public class King : Piece
 	{
-		public King(Vector2Int position, SideColor side)
+		public King(Vector2Int position, SideColor side, ChessBoard board)
         {
             this.Position = position;
             this.side = side;
+			this.board = board;
 			PieceType = ((int)side).ToString() + "K";
         }
-
-		public override void Move(Vector2Int targetPos)
-		{
-
-		}
 
 		protected override void ListAllMoves()
         {

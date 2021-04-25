@@ -31,9 +31,10 @@ namespace ChessButCool
             noVal3 = true;
         }
 
-        public bool GetnoVal3()
+        public bool NoVal3
         {
-            return noVal3;
+            get { return this.noVal3; }
+            set { noVal3 = value; }
         }
 
         public X Value1 

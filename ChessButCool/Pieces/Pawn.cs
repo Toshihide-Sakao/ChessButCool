@@ -5,21 +5,12 @@ namespace ChessButCool.Pieces
 {
     public class Pawn : Piece
     {
-
-        public Pawn(Vector2Int position, SideColor side)
+        public Pawn(Vector2Int position, SideColor side, ChessBoard board)
         {
             Position = position;
             this.side = side;
+            this.board = board;
             PieceType = ((int)side).ToString() + "P";
-        }
-
-        public override void Move(Vector2Int targetPos)
-        {
-            Vector2Int convPos = new Vector2Int(targetPos.X - Position.X, targetPos.Y - Position.Y);
-            if (moves.Contains(convPos))
-            {
-                Position.Add(convPos);
-            }
         }
 
         protected override void ListAllMoves()
