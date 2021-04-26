@@ -21,7 +21,7 @@ namespace ChessButCool
 
             // generate chessboard
             ChessBoard board = new ChessBoard(700, new Vector2Int(50, 50));
-            UI ui = new UI(150, 700, new Vector2Int(775, 50));
+            UI ui = new UI(150, 700, new Vector2Int(775, 50), board);
 
             board.DeBuggerBoard();
 

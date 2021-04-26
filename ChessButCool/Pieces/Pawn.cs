@@ -21,22 +21,17 @@ namespace ChessButCool.Pieces
             {
                 moves.Add(new Vector2Int(0, 2));
             }
-            if (CanTakeLeft()) // If piece can take left, give them the choice to do so.
-            {
-                moves.Add(new Vector2Int(-1, 1));
-            }
-            if (CanTakeRight()) // If piece can take right, give them the choice to do so.
-            {
-                moves.Add(new Vector2Int(1, 1));
-            }
-            moves.Add(new Vector2Int(0, 1));
+
+            CanTake(); // If piece can take left, give them the choice to do so.
+
+            moves.Add(new Vector2Int(0, 1)); // When nothing
 
             if (side == SideColor.White) // If white, reverse y axis so pawns go towards black
             {
-				foreach (var item in moves)
-				{
-					item.Multiply(new Vector2Int(1, -1));
-				}
+                foreach (var item in moves)
+                {
+                    item.Multiply(new Vector2Int(1, -1));
+                }
             }
 
             FilterMoves();
@@ -56,15 +51,21 @@ namespace ChessButCool.Pieces
             return false;
         }
 
-        private bool CanTakeLeft()
+        private void CanTake()
         {
-            if (false) // if enemy piece exists on the place pawns can take on left side
+            int sideMultiplier = 1;
+            for (int i = -1; i <= 1; i += 2)
             {
-                // TODO: Write code
-
-                return true; // Piece can take on left side
+                if ((int)side == 0)
+                {
+                    sideMultiplier = -1;
+                }
+                if (!board.GetMap()[Position.X + i, Position.Y + sideMultiplier].NoVal3) // if enemy piece exists on the place pawns can take on left side
+                {
+                    // Adds the move to moves list
+                    moves.Add(new Vector2Int(i, 1));
+                }
             }
-            return false; // Can't take pieces to the left
         }
 
         private bool CanTakeRight()
@@ -81,7 +82,7 @@ namespace ChessButCool.Pieces
 
         public override Vector2Int GetPieceNumbers()
         {
-            return new Vector2Int((int)side, 0); 
+            return new Vector2Int((int)side, 0);
         }
     }
 }

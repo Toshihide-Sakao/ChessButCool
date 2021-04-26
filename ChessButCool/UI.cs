@@ -8,17 +8,27 @@ namespace ChessButCool
         int width;
         int height;
         Vector2Int pos;
+        ChessBoard board;
 
-        public UI(int width, int height, Vector2Int pos)
+        public UI(int width, int height, Vector2Int pos, ChessBoard board)
         {
             this.width = width;
             this.height = height;
             this.pos = pos;
+            this.board = board;
         }
 
         public void Draw()
         {
-            Raylib.DrawText("TEST", pos.X, 600, 50, Color.WHITE);
+            if (board.Turn % 2 == 0)
+            {
+                Raylib.DrawText("White turn", pos.X, 600, 40, Color.WHITE);
+            }
+            else
+            {
+                Raylib.DrawText("Black turn", pos.X, 600, 40, Color.WHITE);
+            }
+            
         }
     }
 }

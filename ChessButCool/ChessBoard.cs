@@ -17,6 +17,7 @@ namespace ChessButCool
         int turn = 0;
 
         Image[][] imageArray;
+        Texture2D[][] textureArray;
         Pair<bool, Piece> ShowingMoves = new Pair<bool, Piece>();
 
         public ChessBoard(int width, Vector2Int pos)
@@ -28,7 +29,7 @@ namespace ChessButCool
 
             StartBoard(); // Creating board checkred board
             FENStringConverter(StartingFEN); // puts pieces in starting position
-            LoadImages(); // Loading all images
+            LoadTextures(); // Loading all textures from images
         }
 
         // debug ----------------------
@@ -48,7 +49,7 @@ namespace ChessButCool
         }
         // -----------------------------
 
-        public void LoadImages() // Loads all piece images
+        private void LoadImages() // Loads all piece images
         {
             imageArray = new Image[2][];
             for (int i = 0; i < 2; i++)
@@ -62,6 +63,22 @@ namespace ChessButCool
                     Raylib.LoadImage(basePath + i.ToString() + "Q" + ".png"),
                     Raylib.LoadImage(basePath + i.ToString() + "K" + ".png"),
                 };
+            }
+        }
+
+        private void LoadTextures() // Loads all texture
+        {
+            LoadImages();
+            textureArray = new Texture2D[2][];
+            for (int i = 0; i < imageArray.Length; i++)
+            {
+                textureArray[i] = new Texture2D[imageArray[i].Length];
+                for (int j = 0; j < imageArray[i].Length; j++)
+                {
+                    textureArray[i][j] = Raylib.LoadTextureFromImage(imageArray[i][j]);
+                    textureArray[i][j].width = sqWidth;
+                    textureArray[i][j].height = sqWidth;
+                }
             }
         }
 
@@ -94,15 +111,9 @@ namespace ChessButCool
                     {
                         // Gets piece values which is used to find which sprite to draw.
                         Vector2Int val = map[x, y].Value3.GetPieceNumbers();
-                        // makes texture from loaded image in array
-                        Texture2D texture = Raylib.LoadTextureFromImage(imageArray[val.X][val.Y]);
-
-                        // fixes width and height of texture
-                        texture.width = sqWidth;
-                        texture.height = sqWidth;
 
                         // draws texture.
-                        Raylib.DrawTexture(texture, xPos, yPos, Color.WHITE);
+                        Raylib.DrawTexture(textureArray[val.X][val.Y], xPos, yPos, Color.WHITE);
                     }
                 }
             }
@@ -131,7 +142,7 @@ namespace ChessButCool
                     // bruh orkar inte
                     if (!map[mapX, mapY].NoVal3)
                     {
-                        if (turn % 2 == (int)map[mapX, mapY].Value3.Side)
+                        if (Turn % 2 == (int)map[mapX, mapY].Value3.Side)
                         {
                             map[mapX, mapY].Value3.ShowMoves();
                             ShowingMoves.SetValue(true, map[mapX, mapY].Value3);
@@ -158,7 +169,7 @@ namespace ChessButCool
                     // add turn
                     if (moved)
                     {
-                        turn++;
+                        Turn++;
                     }
                 }
             }
@@ -237,6 +248,11 @@ namespace ChessButCool
             }
         }
 
+        public int Turn
+        {
+            get { return turn; }
+            private set { turn = value; }
+        }
         public Triple<int, int, Piece>[,] GetMap()
         {
             return map;
