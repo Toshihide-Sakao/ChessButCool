@@ -79,6 +79,21 @@ namespace ChessButCool.Pieces
         protected void FilterMoves()
         {
             moves.RemoveAll(item => item.X >= 8 - Position.X || item.X < 0 - Position.X || item.Y >= 8 - Position.Y || item.Y < 0 - Position.Y);
+
+            List<int> removeInts = new List<int>();
+            for (int i = 0; i < moves.Count; i++)
+            {
+                if (!board.GetMap()[Position.X + moves[i].X, Position.Y + moves[i].Y].NoVal3 && board.GetMap()[Position.X + moves[i].X, Position.Y + moves[i].Y].Value3.Side == this.side)
+                {
+                    removeInts.Add(i);
+                }
+            }
+            for (int i = removeInts.Count - 1; i >= 0; i--)
+            {
+                moves.RemoveAt(removeInts[i]);
+            }
+            // remove all blocked moves by allied pieces
+
             // var nodupeMoves = moves.Distinct();
         }
 
@@ -104,55 +119,98 @@ namespace ChessButCool.Pieces
             }
         }
 
-        // FIXME: fix these
-        protected void AddRookMoves()
+        private bool CheckCollision(Vector2Int addingVector)
         {
-            // adding all possible x routes (as a rook)
-            for (int x = -7; x < 8; x++)
+            bool collided = true;
+            if (Position.X + addingVector.X < 8 && Position.X + addingVector.X >= 0 && Position.Y + addingVector.Y < 8 && Position.Y + addingVector.Y >= 0) // if the targeted position is out of bound
             {
-                if (x != 0)
+                if (!board.GetMap()[Position.X + addingVector.X, Position.Y + addingVector.Y].NoVal3) // If there is a piece
                 {
-                    // if (position.X + x < 8 && position.X + x >= 0)
-                    // {
-                    //     if (!board.GetMap()[position.X + x, position.Y].NoVal3)
-                    //     {
-                    //         break;
-                    //     }
-                    // }
-
-
-                    moves.Add(new Vector2Int(x, 0));
+                    if (board.GetMap()[Position.X + addingVector.X, Position.Y + addingVector.Y].Value3.Side == this.Side) // if the piece is the same color as you
+                    {
+                        collided = true;
+                    }
+                    else // if the color is no the same as yours
+                    {
+                        moves.Add(addingVector);
+                        collided = true;
+                    }
+                }
+                else // no piece
+                {
+                    moves.Add(addingVector);
+                    collided = false;
                 }
             }
-            // adding all possible y routes (as a rook)
-            for (int y = -7; y < 8; y++)
+
+            return collided;
+        }
+
+        protected void AddRookMoves()
+        {
+            bool[] boolArray = new bool[4];
+            // adding all possible x routes (as a rook)
+            for (int i = 1; i < 8; i++)
             {
-                if (y != 0)
+                int boolCounter = 0;
+                for (int j = -1; j <= 1; j += 2)
                 {
-                    // if (position.Y + y < 8 && position.Y + y >= 0)
-                    // {
-                    //     if (!board.GetMap()[position.X, position.Y + y].NoVal3)
-                    //     {
-                    //         break;
-                    //     }
-                    // }
-
-
-                    moves.Add(new Vector2Int(0, y));
+                    if (!boolArray[boolCounter])
+                    {
+                        int ok = i * j;
+                        bool temp = CheckCollision(new Vector2Int(ok, 0));
+                        if (!temp)
+                        {
+                            moves.Add(new Vector2Int(ok, 0));
+                        }
+                        boolArray[boolCounter] = temp;
+                    }
+                    if (!boolArray[boolCounter + 2])
+                    {
+                        int ok = i * j;
+                        bool temp = CheckCollision(new Vector2Int(0, ok));
+                        if (!temp)
+                        {
+                            moves.Add(new Vector2Int(0, ok));
+                        }
+                        boolArray[boolCounter + 2] = temp;
+                    }
+                    boolCounter++;
                 }
             }
         }
 
-        // FIXME: fix these
         protected void AddBishopMoves()
         {
+            bool[] boolArray = new bool[4];
+
             // adding all possible diagonal (as a bishop)
-            for (int q = -7; q < 8; q++)
+            for (int i = 1; i < 8; i++)
             {
-                if (q != 0)
+                int boolCounter = 0;
+                for (int j = -1; j <= 1; j += 2)
                 {
-                    moves.Add(new Vector2Int(q));
-                    moves.Add(new Vector2Int(q, -q));
+                    if (!boolArray[boolCounter])
+                    {
+                        int ok = i * j;
+                        bool temp = CheckCollision(new Vector2Int(ok));
+                        if (!temp)
+                        {
+                            moves.Add(new Vector2Int(ok));
+                        }
+                        boolArray[boolCounter] = temp;
+                    }
+                    if (!boolArray[boolCounter + 2])
+                    {
+                        int ok = i * j;
+                        bool temp = CheckCollision(new Vector2Int(ok, -ok));
+                        if (!temp)
+                        {
+                            moves.Add(new Vector2Int(ok, -ok));
+                        }
+                        boolArray[boolCounter + 2] = temp;
+                    }
+                    boolCounter++;
                 }
             }
         }

@@ -106,6 +106,10 @@ namespace ChessButCool
                     {
                         Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(118, 135, 57, (int)(0.6f * 255)));
                     }
+                    else if (map[x, y].Value2 == 2)
+                    {
+                        Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(232, 74, 101, (int)(0.6f * 255)));
+                    }
 
                     if (!map[x, y].NoVal3) // if piece exists on position
                     {
@@ -146,8 +150,8 @@ namespace ChessButCool
                         {
                             map[mapX, mapY].Value3.ShowMoves();
                             ShowingMoves.SetValue(true, map[mapX, mapY].Value3);
+                            map[mapX, mapY].Value2 = 2;
                         }
-
                     }
                 }
             }
@@ -169,10 +173,23 @@ namespace ChessButCool
                     // add turn
                     if (moved)
                     {
+                        ShowingMoves.Value1 = false;
                         Turn++;
                     }
                 }
             }
+        }
+
+        // TODO: Check
+        private void CheckForCheck()
+        {
+
+        }
+
+        // TODO: Checkmate
+        private void CheckForCheckmate()
+        {
+
         }
 
         private void UnClick()

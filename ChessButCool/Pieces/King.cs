@@ -15,6 +15,8 @@ namespace ChessButCool.Pieces
 
 		protected override void ListAllMoves()
         {
+			moves = new List<Vector2Int>();
+			
 			for (int y = -1; y < 2; y++)
 			{
 				for (int x = -1; x < 2; x++)

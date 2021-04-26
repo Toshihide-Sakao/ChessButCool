@@ -17,14 +17,9 @@ namespace ChessButCool.Pieces
         {
             moves = new List<Vector2Int>();
 
-            if (FirstMove()) // If first time moving, give them the choice to move 2 steps. 
-            {
-                moves.Add(new Vector2Int(0, 2));
-            }
-
+            FirstMove(); // If first time moving, give them the choice to move 2 steps. 
             CanTake(); // If piece can take left, give them the choice to do so.
-
-            moves.Add(new Vector2Int(0, 1)); // When nothing
+            GoForward();// When nothing
 
             if (side == SideColor.White) // If white, reverse y axis so pawns go towards black
             {
@@ -37,18 +32,16 @@ namespace ChessButCool.Pieces
             FilterMoves();
         }
 
-        private bool FirstMove()
+        private void FirstMove()
         {
-            if (Position.Y == 1 && side == SideColor.Black)
+            if (CanProceed(2))
             {
-                return true;
-            }
-            else if (Position.Y == 6 && side == SideColor.White)
-            {
-                return true;
+                if ((Position.Y == 1 && side == SideColor.Black) || (Position.Y == 6 && side == SideColor.White))
+                {
+                    moves.Add(new Vector2Int(0, 2));
+                }
             }
 
-            return false;
         }
 
         private void CanTake()
@@ -60,12 +53,31 @@ namespace ChessButCool.Pieces
                 {
                     sideMultiplier = -1;
                 }
-                if (!board.GetMap()[Position.X + i, Position.Y + sideMultiplier].NoVal3) // if enemy piece exists on the place pawns can take on left side
+                if (Position.X + i < 8 && Position.X + i >= 0 && Position.Y + sideMultiplier < 8 && Position.Y + sideMultiplier >= 0)
                 {
-                    // Adds the move to moves list
-                    moves.Add(new Vector2Int(i, 1));
+                    if (!board.GetMap()[Position.X + i, Position.Y + sideMultiplier].NoVal3) // if enemy piece exists on the place pawns can take on left side
+                    {
+                        // Adds the move to moves list
+                        moves.Add(new Vector2Int(i, 1));
+                    }
                 }
+
             }
+        }
+
+        private void GoForward()
+        {
+            if (CanProceed(1))
+                moves.Add(new Vector2Int(0, 1));
+        }
+
+        private bool CanProceed(int moves)
+        {
+            if (side == SideColor.White)
+            {
+                moves *= -1;
+            }
+            return board.GetMap()[Position.X, Position.Y + moves].NoVal3;
         }
 
         private bool CanTakeRight()

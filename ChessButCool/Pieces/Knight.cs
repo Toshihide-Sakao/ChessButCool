@@ -15,6 +15,8 @@ namespace ChessButCool.Pieces
 
         protected override void ListAllMoves()
         {
+            moves = new List<Vector2Int>();
+            
             moves.Add(new Vector2Int(2, 1));
             moves.Add(new Vector2Int(1, 2));
 			moves.Add(new Vector2Int(-2, 1));
