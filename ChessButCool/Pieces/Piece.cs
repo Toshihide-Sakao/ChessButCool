@@ -79,17 +79,21 @@ namespace ChessButCool.Pieces
 
         public List<Vector2Int> GetPublicMoves()
         {
-            List<Vector2Int> publicMoves = new(moves);
             ListAllMoves();
+            List<Vector2Int> publicMoves = new();
             for (int i = 0; i < moves.Count; i++)
             {
                 // FIXME:
                 publicMoves.Add(Vector2Int.Add(Position, moves[i]));
+                Console.WriteLine("ok");
             }
 
+            foreach (var item in publicMoves)
+            {
+                board.GetMap()[item.X, item.Y].Value2 = 99;
+            }
 
-
-            return moves;
+            return publicMoves;
         }
         protected void FilterMoves()
         {

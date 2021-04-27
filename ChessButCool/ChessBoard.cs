@@ -115,6 +115,10 @@ namespace ChessButCool
                     {
                         Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(255, 0, 0, (int)(0.7f * 255)));
                     }
+                    else if (map[x, y].Value2 == 99)
+                    {
+                        Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(17, 208, 212, (int)(0.7f * 255)));
+                    }
 
                     if (!map[x, y].NoVal3) // if piece exists on position
                     {
@@ -173,43 +177,59 @@ namespace ChessButCool
                     int mapX = (mousepos.X - pos.X) / sqWidth;
                     int mapY = (mousepos.Y - pos.Y) / sqWidth;
 
+                    Vector2Int oldPos = ShowingMoves.Value2.Position;
                     bool moved = ShowingMoves.Value2.Move(new Vector2Int(mapX, mapY));
 
                     // add turn
                     if (moved)
                     {
                         ShowingMoves.Value1 = false;
-                        CheckForCheck();
+                        CheckResolver((SideColor)(turn % 2 == 0 ? 1 : 0));
 
-                        Turn++;
+                        if (check[turn % 2])
+                        {
+                            ShowingMoves.Value2.Move(oldPos);
+                        }
+                        else
+                        {
+                            CheckForCheck((SideColor)(turn % 2));
+                            Turn++;
+                        }
                     }
                 }
             }
         }
 
-        private void Check()
+        private void CheckResolver(SideColor color)
         {
-            Vector2Int kingPos = GetKingPos((SideColor)(turn % 2));
+            if (check[(int)color == 1 ? 0 : 1])
+            {
+                CheckForCheck(color);
+            }
+        }
+
+        private void Check(SideColor color)
+        {
+            Vector2Int kingPos = GetKingPos(color);
             map[kingPos.X, kingPos.Y].Value2 = 3;
         }
 
         // TODO: Check
-        private void CheckForCheck()
+        private void CheckForCheck(SideColor color)
         {
-            SideColor color = turn % 2 == 0 ? SideColor.Black : SideColor.White;
-            var allMoves = ListAllMoves((SideColor)(turn % 2));
+            SideColor kingColor = color == SideColor.White ? SideColor.Black : SideColor.White;
+            var allMoves = ListAllMoves(color);
 
-            Vector2Int kingPos = GetKingPos((SideColor)(turn % 2));
+            Vector2Int kingPos = GetKingPos(kingColor);
 
-            Console.WriteLine("new");
-            foreach (var item in allMoves)
-            {
-                Console.WriteLine(item.X + ", " + item.Y);
-            }
             if (allMoves.Contains(kingPos))
             {
-                check[turn % 2] = true;
-                Check();
+                check[(int)kingColor] = true;
+                Check(kingColor);
+            }
+            else
+            {
+                check[(int)kingColor] = false;
             }
         }
 
