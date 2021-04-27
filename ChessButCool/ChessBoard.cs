@@ -15,6 +15,7 @@ namespace ChessButCool
         private readonly string StartingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         private readonly string basePath = "Sprites/";
         int turn = 0;
+        bool[] check = new bool[2];
 
         Image[][] imageArray;
         Texture2D[][] textureArray;
@@ -110,6 +111,10 @@ namespace ChessButCool
                     {
                         Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(232, 74, 101, (int)(0.6f * 255)));
                     }
+                    else if (map[x, y].Value2 == 3)
+                    {
+                        Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(255, 0, 0, (int)(0.7f * 255)));
+                    }
 
                     if (!map[x, y].NoVal3) // if piece exists on position
                     {
@@ -174,16 +179,77 @@ namespace ChessButCool
                     if (moved)
                     {
                         ShowingMoves.Value1 = false;
+                        CheckForCheck();
+
                         Turn++;
                     }
                 }
             }
         }
 
+        private void Check()
+        {
+            Vector2Int kingPos = GetKingPos((SideColor)(turn % 2));
+            map[kingPos.X, kingPos.Y].Value2 = 3;
+        }
+
         // TODO: Check
         private void CheckForCheck()
         {
+            SideColor color = turn % 2 == 0 ? SideColor.Black : SideColor.White;
+            var allMoves = ListAllMoves((SideColor)(turn % 2));
 
+            Vector2Int kingPos = GetKingPos((SideColor)(turn % 2));
+
+            Console.WriteLine("new");
+            foreach (var item in allMoves)
+            {
+                Console.WriteLine(item.X + ", " + item.Y);
+            }
+            if (allMoves.Contains(kingPos))
+            {
+                check[turn % 2] = true;
+                Check();
+            }
+        }
+
+        private Vector2Int GetKingPos(SideColor color)
+        {
+            Vector2Int kingPos = new Vector2Int(-99, -99);
+            for (int y = 0; y < map.GetLength(1); y++)
+            {
+                for (int x = 0; x < map.GetLength(0); x++)
+                {
+                    if (!map[x, y].NoVal3 && map[x, y].Value3 is King && map[x, y].Value3.Side == color)
+                    {
+                        kingPos = new Vector2Int(x, y);
+                    }
+                }
+            }
+
+            if (kingPos.X == -99)
+            {
+                throw new Exception("no King");
+            }
+            return kingPos;
+        }
+
+        private List<Vector2Int> ListAllMoves(SideColor turn)
+        {
+            List<Vector2Int> allMoves = new();
+
+            for (int y = 0; y < map.GetLength(1); y++)
+            {
+                for (int x = 0; x < map.GetLength(0); x++)
+                {
+                    if (!map[x, y].NoVal3 && map[x, y].Value3.Side == turn)
+                    {
+                        allMoves.AddRange(map[x, y].Value3.GetPublicMoves());
+                    }
+                }
+            }
+
+            return allMoves;
         }
 
         // TODO: Checkmate

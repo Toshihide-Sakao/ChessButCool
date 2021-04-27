@@ -76,6 +76,21 @@ namespace ChessButCool.Pieces
         }
 
         protected abstract void ListAllMoves();
+
+        public List<Vector2Int> GetPublicMoves()
+        {
+            List<Vector2Int> publicMoves = new(moves);
+            ListAllMoves();
+            for (int i = 0; i < moves.Count; i++)
+            {
+                // FIXME:
+                publicMoves.Add(Vector2Int.Add(Position, moves[i]));
+            }
+
+
+
+            return moves;
+        }
         protected void FilterMoves()
         {
             moves.RemoveAll(item => item.X >= 8 - Position.X || item.X < 0 - Position.X || item.Y >= 8 - Position.Y || item.Y < 0 - Position.Y);

@@ -65,7 +65,14 @@ namespace ChessButCool
             }
         }
 
+        public static Vector2Int Add(Vector2Int a, Vector2Int b)
+        {
+            Vector2Int c = new();
+            c.Add(a);
+            c.Add(b);
 
+            return c;
+        }
 
         public int X
         {
