@@ -83,23 +83,30 @@ namespace ChessButCool.Pieces
             List<Vector2Int> publicMoves = new();
             for (int i = 0; i < moves.Count; i++)
             {
-                // FIXME:
                 publicMoves.Add(Vector2Int.Add(Position, moves[i]));
-                Console.WriteLine("ok");
             }
 
+            // debugging purpose
             foreach (var item in publicMoves)
             {
                 board.GetMap()[item.X, item.Y].Value2 = 99;
             }
+            // ----------------------------------
 
             return publicMoves;
         }
         protected void FilterMoves()
         {
             moves.RemoveAll(item => item.X >= 8 - Position.X || item.X < 0 - Position.X || item.Y >= 8 - Position.Y || item.Y < 0 - Position.Y);
+            RemoveAllyBlockedMoves();
 
-            List<int> removeInts = new List<int>();
+            // var nodupeMoves = moves.Distinct();
+        }
+
+        // removes all blocked moves by allied pieces
+        private void RemoveAllyBlockedMoves()
+        {
+            List<int> removeInts = new();
             for (int i = 0; i < moves.Count; i++)
             {
                 if (!board.GetMap()[Position.X + moves[i].X, Position.Y + moves[i].Y].NoVal3 && board.GetMap()[Position.X + moves[i].X, Position.Y + moves[i].Y].Value3.Side == this.side)
@@ -111,12 +118,9 @@ namespace ChessButCool.Pieces
             {
                 moves.RemoveAt(removeInts[i]);
             }
-            // remove all blocked moves by allied pieces
-
-            // var nodupeMoves = moves.Distinct();
         }
 
-        // FIXME: move into chessboard this can be the problem (can be ignored)
+        // Returns a piece from piecetype
         public static Piece GetPieceFromPieceType(string type, Vector2Int pos, ChessBoard board)
         {
             switch (type[1])

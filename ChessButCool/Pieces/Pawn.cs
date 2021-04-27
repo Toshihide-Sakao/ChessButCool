@@ -80,18 +80,6 @@ namespace ChessButCool.Pieces
             return board.GetMap()[Position.X, Position.Y + moves].NoVal3;
         }
 
-        private bool CanTakeRight()
-        {
-            if (false)// if enemy piece exists on the place pawns can take on right side
-            {
-                // TODO: Write code
-
-                return true; // Piece can take on right side
-            }
-
-            return false; // Can't take pieces to the right
-        }
-
         public override Vector2Int GetPieceNumbers()
         {
             return new Vector2Int((int)side, 0);

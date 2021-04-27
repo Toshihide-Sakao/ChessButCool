@@ -11,8 +11,8 @@ namespace ChessButCool
         int width;
         int sqWidth;
         Triple<int, int, Piece>[,] map = new Triple<int, int, Piece>[8, 8];
-        List<Piece> pieces = new List<Piece>();
-        private readonly string StartingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+        List<Piece> pieces = new List<Piece>(); // FIXME: Bassically not in use, can remove
+        private readonly string StartingFEN = "8/3b4/1k6/6R1/P7/N7/4K3/B6n";
         private readonly string basePath = "Sprites/";
         int turn = 0;
         bool[] check = new bool[2];
@@ -103,21 +103,21 @@ namespace ChessButCool
                         Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(29, 112, 89, 255));
                     }
 
-                    if (map[x, y].Value2 == 1) // if you can move to place
+                    // highlights
+                    switch (map[x, y].Value2)
                     {
-                        Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(118, 135, 57, (int)(0.6f * 255)));
-                    }
-                    else if (map[x, y].Value2 == 2)
-                    {
-                        Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(232, 74, 101, (int)(0.6f * 255)));
-                    }
-                    else if (map[x, y].Value2 == 3)
-                    {
-                        Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(255, 0, 0, (int)(0.7f * 255)));
-                    }
-                    else if (map[x, y].Value2 == 99)
-                    {
-                        Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(17, 208, 212, (int)(0.7f * 255)));
+                        case 1:
+                            Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(118, 135, 57, (int)(0.6f * 255)));
+                            break;
+                        case 2:
+                            Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(232, 74, 101, (int)(0.6f * 255)));
+                            break;
+                        case 3:
+                            Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(255, 0, 0, (int)(0.7f * 255)));
+                            break;
+                        case 99:
+                            Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(17, 208, 212, (int)(0.6f * 255)));
+                            break;
                     }
 
                     if (!map[x, y].NoVal3) // if piece exists on position
@@ -177,69 +177,56 @@ namespace ChessButCool
                     int mapX = (mousepos.X - pos.X) / sqWidth;
                     int mapY = (mousepos.Y - pos.Y) / sqWidth;
 
-                    Vector2Int oldPos = ShowingMoves.Value2.Position;
+                    // Vector2Int oldPos = ShowingMoves.Value2.Position;
                     bool moved = ShowingMoves.Value2.Move(new Vector2Int(mapX, mapY));
 
                     // add turn
                     if (moved)
                     {
                         ShowingMoves.Value1 = false;
-                        CheckResolver((SideColor)(turn % 2 == 0 ? 1 : 0));
 
-                        if (check[turn % 2])
-                        {
-                            ShowingMoves.Value2.Move(oldPos);
-                        }
-                        else
-                        {
-                            CheckForCheck((SideColor)(turn % 2));
-                            Turn++;
-                        }
+                        CheckForCheck((SideColor)(turn % 2));
+                        Turn++;
                     }
                 }
             }
         }
 
-        private void CheckResolver(SideColor color)
-        {
-            if (check[(int)color == 1 ? 0 : 1])
-            {
-                CheckForCheck(color);
-            }
-        }
-
-        private void Check(SideColor color)
-        {
-            Vector2Int kingPos = GetKingPos(color);
-            map[kingPos.X, kingPos.Y].Value2 = 3;
-        }
-
-        // TODO: Check
+        // Checking for check (color is for the one attacking the king)
         private void CheckForCheck(SideColor color)
         {
-            SideColor kingColor = color == SideColor.White ? SideColor.Black : SideColor.White;
+            SideColor kingColor = color == SideColor.White ? SideColor.Black : SideColor.White; // getting the opposite color for the king
+            Vector2Int kingPos = GetKingPos(kingColor); // Getting the king position
+
+            // Getting allmoves from the attacking side color
             var allMoves = ListAllMoves(color);
 
-            Vector2Int kingPos = GetKingPos(kingColor);
-
+            // if king is being attacked
             if (allMoves.Contains(kingPos))
             {
+                // king side color is checked
                 check[(int)kingColor] = true;
-                Check(kingColor);
+
+                // highlighting the king
+                map[kingPos.X, kingPos.Y].Value2 = 3;
             }
+            // if king is not attacked
             else
             {
                 check[(int)kingColor] = false;
             }
         }
 
+        // Gets the position of the king from color
         private Vector2Int GetKingPos(SideColor color)
         {
-            Vector2Int kingPos = new Vector2Int(-99, -99);
+            Vector2Int kingPos = new Vector2Int(-99, -99); // a temporary position
+
             for (int y = 0; y < map.GetLength(1); y++)
             {
                 for (int x = 0; x < map.GetLength(0); x++)
                 {
+                    // if there is a piece, piece is a king, the king has the right color
                     if (!map[x, y].NoVal3 && map[x, y].Value3 is King && map[x, y].Value3.Side == color)
                     {
                         kingPos = new Vector2Int(x, y);
@@ -247,43 +234,117 @@ namespace ChessButCool
                 }
             }
 
+            // there was no king found
             if (kingPos.X == -99)
             {
+                // throw an error
                 throw new Exception("no King");
             }
-            return kingPos;
+
+            return kingPos; // return the positon of the king
         }
 
-        private List<Vector2Int> ListAllMoves(SideColor turn)
+        // Returns a list with all possible moves on one side
+        private List<Vector2Int> ListAllMoves(SideColor color)
         {
+            // Makes a new list which will be returned
             List<Vector2Int> allMoves = new();
 
             for (int y = 0; y < map.GetLength(1); y++)
             {
                 for (int x = 0; x < map.GetLength(0); x++)
                 {
-                    if (!map[x, y].NoVal3 && map[x, y].Value3.Side == turn)
+                    // if there is a piece and the piece is the color
+                    if (!map[x, y].NoVal3 && map[x, y].Value3.Side == color)
                     {
+                        // adds a list which contains all possible moves the piece coud do.
                         allMoves.AddRange(map[x, y].Value3.GetPublicMoves());
                     }
                 }
             }
 
+            // return the list
             return allMoves;
+        }
+
+        private List<Piece> ListAllPieces(SideColor color)
+        {
+            // Makes a new list which will be returned
+            List<Piece> allPieces = new();
+
+            for (int y = 0; y < map.GetLength(1); y++)
+            {
+                for (int x = 0; x < map.GetLength(0); x++)
+                {
+                    // if there is a piece and the piece is the color
+                    if (!map[x, y].NoVal3 && map[x, y].Value3.Side == color)
+                    {
+                        // adds a list which contains all possible moves the piece coud do. FIXME: just chnage comment
+                        allPieces.Add(map[x, y].Value3);
+                    }
+                }
+            }
+
+            // return the list
+            return allPieces;
+        }
+
+        // remove invalid moves when checked (color is the one is cheked)
+        private List<Vector2Int> RemoveInvalidMoves(List<Vector2Int> alliedMoves, SideColor checkedColor)
+        {
+            SideColor oppositeColor = checkedColor == SideColor.White ? SideColor.Black : SideColor.White;
+            if (check[(int)checkedColor])
+            {
+                alliedMoves = new();
+                var oppositeMoves = ListAllMoves(oppositeColor);
+                var alliedPieces = ListAllPieces(checkedColor);
+
+                // do simulation if check is removed
+                for (int i = 0; i < alliedPieces.Count; i++)
+                {
+                    var publicMoves = alliedPieces[i].GetPublicMoves(); // list for all public moves for the piece right now
+                    var oldPos = alliedPieces[i].Position;
+                    List<int> IntsToRemove = new List<int>();
+
+                    for (int j = 0; j < publicMoves.Count; j++)
+                    {
+                        alliedPieces[i].Move(publicMoves[j]); // tries out the move
+
+                        CheckForCheck(oppositeColor);
+                        if (check[(int)checkedColor])
+                        {
+                            IntsToRemove.Add(j);
+                        }
+
+                        alliedPieces[i].Move(oldPos);
+                    }
+
+                    for (int j = IntsToRemove.Count - 1; j >= 0; j--)
+                    {
+                        publicMoves.RemoveAt(IntsToRemove[j]);
+                    }
+
+                    alliedMoves.AddRange(publicMoves);
+                }
+                return alliedMoves;
+            }
+            return alliedMoves;
         }
 
         // TODO: Checkmate
         private void CheckForCheckmate()
         {
-
+            // TODO: Need to get a list for all moves that are possible with checked
+            // if that list.count == 0  then check mate
         }
-
+        // Returns all value2(highlights) to not highlighted.
         private void UnClick()
         {
             for (int y = 0; y < map.GetLength(1); y++)
             {
                 for (int x = 0; x < map.GetLength(0); x++)
                 {
+                    // Makes non highlighted
                     map[x, y].Value2 = 0;
                 }
             }
@@ -292,10 +353,12 @@ namespace ChessButCool
         // Method for converting FENstring to the map array.
         private void FENStringConverter(string fen)
         {
+            // A vector2 for recording the current position
             Vector2Int currentPos = new Vector2Int(0, 0);
 
             foreach (char item in fen)
             {
+                // skip a row
                 if (item == '/')
                 {
                     currentPos.X = 0;
@@ -303,20 +366,25 @@ namespace ChessButCool
                 }
                 else
                 {
+                    // skip a number to the right
                     if (char.IsDigit(item))
                     {
-                        currentPos.X += (int)char.GetNumericValue(item) - 1;
+                        currentPos.X += (int)char.GetNumericValue(item);
                     }
+                    // A piece which is white
                     else if (char.IsUpper(item))
                     {
                         map[currentPos.X, currentPos.Y].Value3 = Piece.GetPieceFromPieceType("0" + item.ToString().ToUpper(), currentPos, this);
                     }
+                    // A piece which is black
                     else
                     {
                         map[currentPos.X, currentPos.Y].Value3 = Piece.GetPieceFromPieceType("1" + item.ToString().ToUpper(), currentPos, this);
                     }
-                    pieces.Add(map[currentPos.X, currentPos.Y].Value3);
+                    // adding the 
+                    // pieces.Add(map[currentPos.X, currentPos.Y].Value3); // possibly remove FIXME:
 
+                    // add a position if the char was representing a piece
                     if (!char.IsDigit(item) && currentPos.X < 8)
                     {
                         currentPos.X++;
