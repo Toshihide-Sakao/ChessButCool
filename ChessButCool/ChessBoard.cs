@@ -1,3 +1,4 @@
+using System.Numerics;
 using System;
 using System.Collections.Generic;
 using ChessButCool.Pieces;
@@ -36,13 +37,19 @@ namespace ChessButCool
         // debug ----------------------
         public void DeBuggerBoard()
         {
+            Console.WriteLine();
             for (int y = 0; y < map.GetLength(1); y++)
             {
                 for (int x = 0; x < map.GetLength(0); x++)
                 {
                     if (!map[x, y].NoVal3)
                     {
-                        Console.Write(map[x, y].Value3.Position.X + "," + map[x, y].Value3.Position.Y + " ");
+                        // Console.Write( map[x, y].Value3.Position.X + "," + map[x, y].Value3.Position.Y + " ");
+                        Console.Write( map[x, y].Value3.PieceType + " ");
+                    }
+                    else
+                    {
+                        Console.Write("## ");
                     }
                 }
                 Console.Write("\n");
@@ -186,6 +193,7 @@ namespace ChessButCool
                         ShowingMoves.Value1 = false;
 
                         CheckForCheck((SideColor)(turn % 2));
+                        RemoveInvalidMoves((SideColor)((1 - turn) % 2));
                         Turn++;
                     }
                 }
@@ -250,6 +258,7 @@ namespace ChessButCool
             // Makes a new list which will be returned
             List<Vector2Int> allMoves = new();
 
+
             for (int y = 0; y < map.GetLength(1); y++)
             {
                 for (int x = 0; x < map.GetLength(0); x++)
@@ -265,6 +274,23 @@ namespace ChessButCool
 
             // return the list
             return allMoves;
+        }
+
+        private Triple<int, int, Piece>[,] DeepCopy2DArr(Triple<int, int, Piece>[,] array)
+        {
+            Triple<int, int, Piece>[,] copiedMap = new Triple<int, int, Piece>[8, 8];
+            for (int y = 0; y < array.GetLength(1); y++)
+            {
+                for (int x = 0; x < array.GetLength(0); x++)
+                {
+                    Triple<int, int, Piece> tri = new();
+                    tri.SetValue(map[x, y].Value1, map[x, y].Value2, map[x, y].Value3);
+                    tri.NoVal3 = map[x, y].NoVal3;
+                    copiedMap[x, y] = tri;
+                }
+            }
+
+            return copiedMap;
         }
 
         private List<Piece> ListAllPieces(SideColor color)
@@ -290,12 +316,11 @@ namespace ChessButCool
         }
 
         // remove invalid moves when checked (color is the one is cheked)
-        private List<Vector2Int> RemoveInvalidMoves(List<Vector2Int> alliedMoves, SideColor checkedColor)
+        private void RemoveInvalidMoves(SideColor checkedColor)
         {
             SideColor oppositeColor = checkedColor == SideColor.White ? SideColor.Black : SideColor.White;
             if (check[(int)checkedColor])
             {
-                alliedMoves = new();
                 var oppositeMoves = ListAllMoves(oppositeColor);
                 var alliedPieces = ListAllPieces(checkedColor);
 
@@ -303,11 +328,18 @@ namespace ChessButCool
                 for (int i = 0; i < alliedPieces.Count; i++)
                 {
                     var publicMoves = alliedPieces[i].GetPublicMoves(); // list for all public moves for the piece right now
-                    var oldPos = alliedPieces[i].Position;
+                    var oldPos = new Vector2Int(alliedPieces[i].Position.X, alliedPieces[i].Position.Y);
                     List<int> IntsToRemove = new List<int>();
 
                     for (int j = 0; j < publicMoves.Count; j++)
                     {
+                        Piece takenPiece = new Dummy();
+                        bool takesPiece = false;
+                        if (!map[publicMoves[j].X, publicMoves[j].Y].NoVal3 && map[publicMoves[j].X, publicMoves[j].Y].Value3.Side == oppositeColor)
+                        {
+                            takenPiece = map[publicMoves[j].X, publicMoves[j].X].Value3;
+                            takesPiece = true;
+                        }
                         alliedPieces[i].Move(publicMoves[j]); // tries out the move
 
                         CheckForCheck(oppositeColor);
@@ -316,19 +348,22 @@ namespace ChessButCool
                             IntsToRemove.Add(j);
                         }
 
+                        DeBuggerBoard();
                         alliedPieces[i].Move(oldPos);
+                        if (takesPiece == true)
+                        {
+                            map[publicMoves[j].X, publicMoves[j].Y].Value3 = takenPiece;
+                        }
+                        DeBuggerBoard();
+                        Console.WriteLine();
                     }
 
                     for (int j = IntsToRemove.Count - 1; j >= 0; j--)
                     {
-                        publicMoves.RemoveAt(IntsToRemove[j]);
+                        alliedPieces[i].Moves.RemoveAt(IntsToRemove[j]);
                     }
-
-                    alliedMoves.AddRange(publicMoves);
                 }
-                return alliedMoves;
             }
-            return alliedMoves;
         }
 
         // TODO: Checkmate

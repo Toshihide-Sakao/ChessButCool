@@ -43,6 +43,12 @@ namespace ChessButCool.Pieces
             get { return pieceType; }
             set { pieceType = value; }
         }
+
+        public List<Vector2Int> Moves
+        {
+            get { return moves; }
+            set { moves = value; }
+        }
         public abstract Vector2Int GetPieceNumbers();
 
         public bool Move(Vector2Int targetPos)
