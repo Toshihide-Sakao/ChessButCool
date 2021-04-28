@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using ChessButCool.Pieces;
 using Raylib_cs;
+using System.Linq;
 
 namespace ChessButCool
 {
@@ -13,7 +14,7 @@ namespace ChessButCool
         int sqWidth;
         Triple<int, int, Piece>[,] map = new Triple<int, int, Piece>[8, 8];
         List<Piece> pieces = new List<Piece>(); // FIXME: Bassically not in use, can remove
-        private readonly string StartingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+        private readonly string StartingFEN = "1k6/6R1/7R/8/8/8/8/4K3";
         private readonly string basePath = "Sprites/";
         int turn = 0;
         bool[] check = new bool[2];
@@ -21,6 +22,7 @@ namespace ChessButCool
         Image[][] imageArray;
         Texture2D[][] textureArray;
         Pair<bool, Piece> ShowingMoves = new Pair<bool, Piece>();
+        Pair<bool, SideColor> checkmated = new();
 
         public ChessBoard(int width, Vector2Int pos)
         {
@@ -28,6 +30,7 @@ namespace ChessButCool
             this.pos = pos;
             sqWidth = (int)(width / 8.0f);
             ShowingMoves.SetValue(false);
+            checkmated.SetValue(false);
 
             StartBoard(); // Creating board checkred board
             FENStringConverter(StartingFEN); // puts pieces in starting position
@@ -139,6 +142,19 @@ namespace ChessButCool
                     }
                 }
             }
+
+            if (checkmated.Value1)
+            {
+                float endWidth = width / 1.6f;
+                float endHeight = width / 2.4f;
+                Vector2Int centerPos = new(pos.X + (width /2), pos.Y + (width / 2));
+                Rectangle endPopup = new(centerPos.X - (endWidth / 2), centerPos.Y - (endHeight / 2), endWidth, endHeight);
+
+                Raylib.DrawRectangle((int)endPopup.x, (int)endPopup.y, (int)endPopup.width, (int)endPopup.height, new Color(77, 77, 77, (int)(255 * 0.95f)));
+
+                int textWidth = Raylib.MeasureText($"{checkmated.Value2} won!", 60);
+                Raylib.DrawText($"{checkmated.Value2} won!", centerPos.X - (textWidth / 2), centerPos.Y - (int)((endHeight / 2) - (endHeight / 10)), 60, Color.WHITE);
+            }
         }
 
         // Update command which checks for user inputs
@@ -200,7 +216,7 @@ namespace ChessButCool
                         check[(int)oppositeColor] = CheckForCheck(movedColor);
                         if (check[(int)oppositeColor])
                         {
-                            Pair<bool, SideColor> checkmated = CheckForCheckmate(oppositeColor);
+                            checkmated = CheckForCheckmate(oppositeColor);
                             if (checkmated.Value1)
                             {
                                 Console.WriteLine(checkmated.Value2 + " won!!");
@@ -288,6 +304,27 @@ namespace ChessButCool
             return allMoves;
         }
 
+        private bool NoMovesLeft(SideColor color)
+        {
+            // Makes a new list which will have all move counts
+            List<int> movesLeftPerPiece = new();
+
+            for (int y = 0; y < map.GetLength(1); y++)
+            {
+                for (int x = 0; x < map.GetLength(0); x++)
+                {
+                    // if there is a piece and the piece is the color
+                    if (!map[x, y].NoVal3 && map[x, y].Value3.Side == color)
+                    {
+                        // adds a list which contains all possible moves the piece coud do.
+                        movesLeftPerPiece.Add(map[x, y].Value3.Moves.Count);
+                    }
+                }
+            }
+
+            return movesLeftPerPiece.All(q => q == 0);
+        }
+
         private List<Piece> ListAllPieces(SideColor color)
         {
             // Makes a new list which will be returned
@@ -367,8 +404,7 @@ namespace ChessButCool
                     RemoveInvalidMovesPiece(alliedPieces[i]);
                 }
 
-                var movesLeft = ListAllMoves(checkedColor);
-                if (movesLeft.Count == 0)
+                if (NoMovesLeft(checkedColor))
                 {
                     res.SetValue(true, oppositeColor);
                 }
