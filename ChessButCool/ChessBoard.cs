@@ -14,7 +14,7 @@ namespace ChessButCool
         int sqWidth;
         Triple<int, int, Piece>[,] map = new Triple<int, int, Piece>[8, 8];
         List<Piece> pieces = new List<Piece>(); // FIXME: Bassically not in use, can remove
-        private readonly string StartingFEN = "1k6/6R1/7R/8/8/8/8/4K3";
+        private readonly string StartingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         private readonly string basePath = "Sprites/";
         int turn = 0;
         bool[] check = new bool[2];
