@@ -13,7 +13,7 @@ namespace ChessButCool
         int sqWidth;
         Triple<int, int, Piece>[,] map = new Triple<int, int, Piece>[8, 8];
         List<Piece> pieces = new List<Piece>(); // FIXME: Bassically not in use, can remove
-        private readonly string StartingFEN = "8/3b4/1k6/6R1/P7/N7/4K3/B6n";
+        private readonly string StartingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         private readonly string basePath = "Sprites/";
         int turn = 0;
         bool[] check = new bool[2];
@@ -37,7 +37,6 @@ namespace ChessButCool
         // debug ----------------------
         public void DeBuggerBoard()
         {
-            Console.WriteLine();
             for (int y = 0; y < map.GetLength(1); y++)
             {
                 for (int x = 0; x < map.GetLength(0); x++)
@@ -45,7 +44,7 @@ namespace ChessButCool
                     if (!map[x, y].NoVal3)
                     {
                         // Console.Write( map[x, y].Value3.Position.X + "," + map[x, y].Value3.Position.Y + " ");
-                        Console.Write( map[x, y].Value3.PieceType + " ");
+                        Console.Write(map[x, y].Value3.PieceType + " ");
                     }
                     else
                     {
@@ -54,6 +53,8 @@ namespace ChessButCool
                 }
                 Console.Write("\n");
             }
+            Console.WriteLine();
+
         }
         // -----------------------------
 
@@ -117,12 +118,13 @@ namespace ChessButCool
                             Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(118, 135, 57, (int)(0.6f * 255)));
                             break;
                         case 2:
-                            Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(232, 74, 101, (int)(0.6f * 255)));
+                            Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(17, 208, 212, (int)(0.6f * 255)));
                             break;
                         case 3:
-                            Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(255, 0, 0, (int)(0.7f * 255)));
+                            Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(255, 0, 0, (int)(0.5f * 255)));
                             break;
                         case 99:
+                            // debug purpose
                             Raylib.DrawRectangle(xPos, yPos, sqWidth, sqWidth, new Color(17, 208, 212, (int)(0.6f * 255)));
                             break;
                     }
@@ -165,6 +167,7 @@ namespace ChessButCool
                         if (Turn % 2 == (int)map[mapX, mapY].Value3.Side)
                         {
                             map[mapX, mapY].Value3.ShowMoves();
+
                             ShowingMoves.SetValue(true, map[mapX, mapY].Value3);
                             map[mapX, mapY].Value2 = 2;
                         }
@@ -192,8 +195,17 @@ namespace ChessButCool
                     {
                         ShowingMoves.Value1 = false;
 
-                        CheckForCheck((SideColor)(turn % 2));
-                        RemoveInvalidMoves((SideColor)((1 - turn) % 2));
+                        SideColor movedColor = (SideColor)(turn % 2);
+                        SideColor oppositeColor = (SideColor)(1 - (turn % 2));
+                        check[(int)oppositeColor] = CheckForCheck(movedColor);
+                        if (check[(int)oppositeColor])
+                        {
+                            Pair<bool, SideColor> checkmated = CheckForCheckmate(oppositeColor);
+                            if (checkmated.Value1)
+                            {
+                                Console.WriteLine(checkmated.Value2 + " won!!");
+                            }
+                        }
                         Turn++;
                     }
                 }
@@ -201,9 +213,9 @@ namespace ChessButCool
         }
 
         // Checking for check (color is for the one attacking the king)
-        private void CheckForCheck(SideColor color)
+        private bool CheckForCheck(SideColor color)
         {
-            SideColor kingColor = color == SideColor.White ? SideColor.Black : SideColor.White; // getting the opposite color for the king
+            SideColor kingColor = (SideColor)(1 - color); // getting the opposite color for the king
             Vector2Int kingPos = GetKingPos(kingColor); // Getting the king position
 
             // Getting allmoves from the attacking side color
@@ -212,16 +224,16 @@ namespace ChessButCool
             // if king is being attacked
             if (allMoves.Contains(kingPos))
             {
-                // king side color is checked
-                check[(int)kingColor] = true;
-
                 // highlighting the king
                 map[kingPos.X, kingPos.Y].Value2 = 3;
+
+                // king side color is checked
+                return true;
             }
             // if king is not attacked
             else
             {
-                check[(int)kingColor] = false;
+                return false;
             }
         }
 
@@ -276,23 +288,6 @@ namespace ChessButCool
             return allMoves;
         }
 
-        private Triple<int, int, Piece>[,] DeepCopy2DArr(Triple<int, int, Piece>[,] array)
-        {
-            Triple<int, int, Piece>[,] copiedMap = new Triple<int, int, Piece>[8, 8];
-            for (int y = 0; y < array.GetLength(1); y++)
-            {
-                for (int x = 0; x < array.GetLength(0); x++)
-                {
-                    Triple<int, int, Piece> tri = new();
-                    tri.SetValue(map[x, y].Value1, map[x, y].Value2, map[x, y].Value3);
-                    tri.NoVal3 = map[x, y].NoVal3;
-                    copiedMap[x, y] = tri;
-                }
-            }
-
-            return copiedMap;
-        }
-
         private List<Piece> ListAllPieces(SideColor color)
         {
             // Makes a new list which will be returned
@@ -315,10 +310,52 @@ namespace ChessButCool
             return allPieces;
         }
 
-        // remove invalid moves when checked (color is the one is cheked)
-        private void RemoveInvalidMoves(SideColor checkedColor)
+        public void RemoveInvalidMovesPiece(Piece piece)
         {
-            SideColor oppositeColor = checkedColor == SideColor.White ? SideColor.Black : SideColor.White;
+            var publicMoves = piece.GetPublicMoves(); // list for all public moves for the piece right now
+            var oldPos = new Vector2Int(piece.Position.X, piece.Position.Y);
+            List<int> IntsToRemove = new List<int>();
+
+            for (int j = 0; j < publicMoves.Count; j++)
+            {
+                Piece takenPiece = new Dummy();
+                bool isEnemyPieceThere = !map[publicMoves[j].X, publicMoves[j].Y].NoVal3 && map[publicMoves[j].X, publicMoves[j].Y].Value3.Side == (1 - piece.Side);
+                if (isEnemyPieceThere)
+                {
+                    takenPiece = map[publicMoves[j].X, publicMoves[j].Y].Value3;
+                }
+
+                piece.Move(publicMoves[j]); // tries out the move
+                piece.GetPublicMoves();
+
+                if (CheckForCheck((SideColor)(1 - piece.Side)))
+                {
+                    IntsToRemove.Add(j);
+                }
+
+                DeBuggerBoard();
+                piece.Move(oldPos, true); // forcefully undo the move
+                piece.GetPublicMoves();
+
+                if (isEnemyPieceThere)
+                {
+                    map[publicMoves[j].X, publicMoves[j].Y].Value3 = takenPiece;
+                }
+                // DeBuggerBoard();
+            }
+
+            for (int j = IntsToRemove.Count - 1; j >= 0; j--)
+            {
+                piece.Moves.RemoveAt(IntsToRemove[j]);
+            }
+        }
+
+        // Checks for checkmate
+        private Pair<bool, SideColor> CheckForCheckmate(SideColor checkedColor)
+        {
+            Pair<bool, SideColor> res = new();
+            res.SetValue(false);
+            SideColor oppositeColor = 1 - checkedColor;
             if (check[(int)checkedColor])
             {
                 var oppositeMoves = ListAllMoves(oppositeColor);
@@ -327,51 +364,19 @@ namespace ChessButCool
                 // do simulation if check is removed
                 for (int i = 0; i < alliedPieces.Count; i++)
                 {
-                    var publicMoves = alliedPieces[i].GetPublicMoves(); // list for all public moves for the piece right now
-                    var oldPos = new Vector2Int(alliedPieces[i].Position.X, alliedPieces[i].Position.Y);
-                    List<int> IntsToRemove = new List<int>();
-
-                    for (int j = 0; j < publicMoves.Count; j++)
-                    {
-                        Piece takenPiece = new Dummy();
-                        bool takesPiece = false;
-                        if (!map[publicMoves[j].X, publicMoves[j].Y].NoVal3 && map[publicMoves[j].X, publicMoves[j].Y].Value3.Side == oppositeColor)
-                        {
-                            takenPiece = map[publicMoves[j].X, publicMoves[j].X].Value3;
-                            takesPiece = true;
-                        }
-                        alliedPieces[i].Move(publicMoves[j]); // tries out the move
-
-                        CheckForCheck(oppositeColor);
-                        if (check[(int)checkedColor])
-                        {
-                            IntsToRemove.Add(j);
-                        }
-
-                        DeBuggerBoard();
-                        alliedPieces[i].Move(oldPos);
-                        if (takesPiece == true)
-                        {
-                            map[publicMoves[j].X, publicMoves[j].Y].Value3 = takenPiece;
-                        }
-                        DeBuggerBoard();
-                        Console.WriteLine();
-                    }
-
-                    for (int j = IntsToRemove.Count - 1; j >= 0; j--)
-                    {
-                        alliedPieces[i].Moves.RemoveAt(IntsToRemove[j]);
-                    }
+                    RemoveInvalidMovesPiece(alliedPieces[i]);
                 }
+
+                var movesLeft = ListAllMoves(checkedColor);
+                if (movesLeft.Count == 0)
+                {
+                    res.SetValue(true, oppositeColor);
+                }
+                return res;
             }
+            return res;
         }
 
-        // TODO: Checkmate
-        private void CheckForCheckmate()
-        {
-            // TODO: Need to get a list for all moves that are possible with checked
-            // if that list.count == 0  then check mate
-        }
         // Returns all value2(highlights) to not highlighted.
         private void UnClick()
         {

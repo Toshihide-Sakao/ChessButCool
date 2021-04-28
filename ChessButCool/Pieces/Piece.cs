@@ -51,10 +51,10 @@ namespace ChessButCool.Pieces
         }
         public abstract Vector2Int GetPieceNumbers();
 
-        public bool Move(Vector2Int targetPos)
+        public bool Move(Vector2Int targetPos, bool force = false)
         {
             Vector2Int convPos = new Vector2Int(targetPos.X - Position.X, targetPos.Y - Position.Y);
-            if (moves.Contains(convPos))
+            if (moves.Contains(convPos) || force)
             {
                 UpdateToMap(convPos);
                 return true;
@@ -67,7 +67,9 @@ namespace ChessButCool.Pieces
         public void ShowMoves()
         {
             ListAllMoves();
-
+            board.RemoveInvalidMovesPiece(this);
+            
+            FilterMoves();
             foreach (var item in moves)
             {
                 board.GetMap()[position.X + item.X, position.Y + item.Y].Value2 = 1;
@@ -86,24 +88,25 @@ namespace ChessButCool.Pieces
         public List<Vector2Int> GetPublicMoves()
         {
             ListAllMoves();
+
             List<Vector2Int> publicMoves = new();
             for (int i = 0; i < moves.Count; i++)
             {
-                publicMoves.Add(Vector2Int.Add(Position, moves[i]));
+                publicMoves.Add(new Vector2Int(Position.X + moves[i].X, Position.Y + moves[i].Y));
             }
 
             // debugging purpose
-            foreach (var item in publicMoves)
-            {
-                board.GetMap()[item.X, item.Y].Value2 = 99;
-            }
+            // foreach (var item in publicMoves)
+            // {
+            //     board.GetMap()[item.X, item.Y].Value2 = 99;
+            // }
             // ----------------------------------
 
             return publicMoves;
         }
         protected void FilterMoves()
         {
-            moves.RemoveAll(item => item.X >= 8 - Position.X || item.X < 0 - Position.X || item.Y >= 8 - Position.Y || item.Y < 0 - Position.Y);
+            moves.RemoveAll(item => item.X + Position.X >= 8 || item.X + Position.X < 0 || item.Y + Position.Y >= 8 || item.Y + Position.Y < 0);
             RemoveAllyBlockedMoves();
 
             // var nodupeMoves = moves.Distinct();

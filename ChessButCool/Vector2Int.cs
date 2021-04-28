@@ -61,7 +61,7 @@ namespace ChessButCool
             else
             {
                 Vector2Int p = (Vector2Int)obj;
-                return (x == p.x) && (y == p.y);
+                return (X == p.X) && (Y == p.Y);
             }
         }
 

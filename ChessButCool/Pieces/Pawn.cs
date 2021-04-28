@@ -34,13 +34,15 @@ namespace ChessButCool.Pieces
 
         private void FirstMove()
         {
-            if (CanProceed(2))
+
+            if ((Position.Y == 1 && side == SideColor.Black) || (Position.Y == 6 && side == SideColor.White))
             {
-                if ((Position.Y == 1 && side == SideColor.Black) || (Position.Y == 6 && side == SideColor.White))
+                if (CanProceed(2))
                 {
                     moves.Add(new Vector2Int(0, 2));
                 }
             }
+
 
         }
 
@@ -76,6 +78,11 @@ namespace ChessButCool.Pieces
             if (side == SideColor.White)
             {
                 moves *= -1;
+            }
+
+            if (Position.Y + moves >= 8 || Position.Y + moves < 0)
+            {
+                return false;
             }
             return board.GetMap()[Position.X, Position.Y + moves].NoVal3;
         }
