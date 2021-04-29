@@ -23,7 +23,7 @@ namespace ChessButCool.Pieces
 
 		public override Vector2Int GetPieceNumbers()
         {
-            return new Vector2Int((int)side, 3); 
+            return new Vector2Int((int)side, 3);
         }
 	}
 }
