@@ -16,15 +16,13 @@ namespace ChessButCool.Pieces
 		protected override void ListAllMoves()
         {
 			moves = new List<Vector2Int>();
-			
 			base.AddBishopMoves();
 			FilterMoves();
 		}
 
 		public override Vector2Int GetPieceNumbers()
         {
-            return new Vector2Int((int)side, 2); 
+            return new Vector2Int((int)side, 2);
         }
-
 	}
 }

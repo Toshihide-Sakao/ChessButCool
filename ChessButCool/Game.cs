@@ -5,8 +5,8 @@ namespace ChessButCool
 {
     public class Game
     {
-        int width;
-        int height;
+        private readonly int width;
+        private readonly int height;
 
         public Game(int width, int height)
         {
@@ -19,11 +19,9 @@ namespace ChessButCool
         {
             Raylib.InitWindow(width, height, "Chess");
 
-            // generate chessboard
-            ChessBoard board = new ChessBoard(700, new Vector2Int(50, 50));
-            UI ui = new UI(230, 700, new Vector2Int(760, 50), board);
-
-            board.DeBuggerBoard();
+            // generate chessboard and ui
+            ChessBoard board = new(700, new Vector2Int(50, 50));
+            UI ui = new(230, 700, new Vector2Int(760, 50), board);
 
             // update function
             while (!Raylib.WindowShouldClose())
@@ -33,6 +31,7 @@ namespace ChessButCool
                 // draw bg
                 Raylib.ClearBackground(new Color(163, 163, 163, 255));
 
+                // Updates and draws board
                 board.Update();
                 board.Draw();
 

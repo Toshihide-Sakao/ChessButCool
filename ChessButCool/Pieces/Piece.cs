@@ -53,7 +53,7 @@ namespace ChessButCool.Pieces
 
         public bool Move(Vector2Int targetPos, bool force = false)
         {
-            Vector2Int convPos = new Vector2Int(targetPos.X - Position.X, targetPos.Y - Position.Y);
+            Vector2Int convPos = new(targetPos.X - Position.X, targetPos.Y - Position.Y);
             if (moves.Contains(convPos) || force)
             {
                 UpdateToMap(convPos);
@@ -132,23 +132,16 @@ namespace ChessButCool.Pieces
         // Returns a piece from piecetype
         public static Piece GetPieceFromPieceType(string type, Vector2Int pos, ChessBoard board)
         {
-            switch (type[1])
+            return type[1] switch
             {
-                case 'P':
-                    return new Pawn(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()), board);
-                case 'B':
-                    return new Bishop(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()), board);
-                case 'N':
-                    return new Knight(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()), board);
-                case 'R':
-                    return new Rook(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()), board);
-                case 'Q':
-                    return new Queen(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()), board);
-                case 'K':
-                    return new King(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()), board);
-                default:
-                    throw new ArgumentException("that piece does not exist");
-            }
+                'P' => new Pawn(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()), board),
+                'B' => new Bishop(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()), board),
+                'N' => new Knight(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()), board),
+                'R' => new Rook(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()), board),
+                'Q' => new Queen(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()), board),
+                'K' => new King(new Vector2Int(pos.X, pos.Y), (SideColor)int.Parse(type[0].ToString()), board),
+                _ => throw new ArgumentException("that piece does not exist"),
+            };
         }
 
         private bool CheckCollision(Vector2Int addingVector)

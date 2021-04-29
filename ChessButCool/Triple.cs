@@ -5,11 +5,11 @@ namespace ChessButCool
 {
     public class Triple<X, Y, Z>
     {
-        X value1;
-        Y value2;
-        Z value3;
+        private X value1;
+        private Y value2;
+        private Z value3;
 
-        bool noVal3;
+        private bool noVal3;
 
         public void SetValue(X value1, Y value2, Z value3)
         {
@@ -37,7 +37,7 @@ namespace ChessButCool
             set { noVal3 = value; }
         }
 
-        public X Value1 
+        public X Value1
         {
             get { return this.value1; }
             set { value1 = value; }
@@ -52,10 +52,10 @@ namespace ChessButCool
         public Z Value3
         {
             get { return this.value3; }
-            set 
+            set
             {
-                noVal3 = false; 
-                value3 = value; 
+                noVal3 = false;
+                value3 = value;
             }
         }
     }

@@ -4,35 +4,13 @@ using System.Numerics;
 
 namespace ChessButCool
 {
+    // A class for a vector2 with ints instead of floats
     public class Vector2Int
     {
-        int x;
-        int y;
+        private int x;
+        private int y;
 
-        public void Add(int x, int y)
-        {
-            this.x += x;
-            this.y += y;
-        }
-
-        public void Add(Vector2Int vector2)
-        {
-            this.x += vector2.X;
-            this.y += vector2.Y;
-        }
-
-        public void Multiply(Vector2Int vector2)
-        {
-            this.x *= vector2.X;
-            this.y *= vector2.Y;
-        }
-
-        public Vector2Int()
-        {
-            x = 0;
-            y = 0;
-        }
-
+        // 4 different Constructors
         public Vector2Int(int x, int y)
         {
             this.x = x;
@@ -51,6 +29,32 @@ namespace ChessButCool
             this.Y = (int)vector2.Y;
         }
 
+        public Vector2Int()
+        {
+            x = 0;
+            y = 0;
+        }
+
+        // Add to the vector2
+        public void Add(int x, int y)
+        {
+            this.x += x;
+            this.y += y;
+        }
+
+        public void Add(Vector2Int vector2)
+        {
+            this.x += vector2.X;
+            this.y += vector2.Y;
+        }
+
+        // Multiply to the vector2
+        public void Multiply(Vector2Int vector2)
+        {
+            this.x *= vector2.X;
+            this.y *= vector2.Y;
+        }
+
         public override bool Equals(object obj)
         {
             //Check for null and compare run-time types.
@@ -65,37 +69,16 @@ namespace ChessButCool
             }
         }
 
-        public static Vector2Int Add(Vector2Int a, Vector2Int b)
-        {
-            Vector2Int c = new();
-            c.Add(a);
-            c.Add(b);
-
-            return c;
-        }
-
         public int X
         {
-            get
-            {
-                return x;
-            }
-            set
-            {
-                x = value;
-            }
+            get { return x; }
+            set { x = value; }
         }
 
         public int Y
         {
-            get
-            {
-                return y;
-            }
-            set
-            {
-                y = value;
-            }
+            get { return y; }
+            set { y = value; }
         }
     }
 }

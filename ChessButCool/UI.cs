@@ -5,10 +5,10 @@ namespace ChessButCool
 {
     public class UI
     {
-        int width;
-        int height;
-        Vector2Int pos;
-        ChessBoard board;
+        private readonly int width;
+        private readonly int height;
+        private readonly Vector2Int pos;
+        private readonly ChessBoard board;
 
         public UI(int width, int height, Vector2Int pos, ChessBoard board)
         {
@@ -31,7 +31,6 @@ namespace ChessButCool
             }
 
             Raylib.DrawText(((board.Turn + 2) / 2).ToString(), pos.X + 5, 100, 30, Color.WHITE);
-            
         }
     }
 }

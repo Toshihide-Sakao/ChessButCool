@@ -7,7 +7,7 @@ namespace ChessButCool
     {
         static void Main(string[] args)
         {
-            Game game = new Game(1000, 800);
+            Game game = new(1000, 800);
         }
     }
 }

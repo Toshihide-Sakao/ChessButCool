@@ -5,9 +5,9 @@ namespace ChessButCool
 {
     public class Pair<X, Y>
     {
-        X value1;
-        Y value2;
-        bool noVal2;
+        private X value1;
+        private Y value2;
+        private bool noVal2;
 
         public void SetValue(X value1, Y value2)
         {
@@ -27,7 +27,7 @@ namespace ChessButCool
             return noVal2;
         }
 
-        public X Value1 
+        public X Value1
         {
             get { return this.value1; }
             set { value1 = value; }
@@ -36,12 +36,11 @@ namespace ChessButCool
         public Y Value2
         {
             get { return this.value2; }
-            set 
+            set
             {
-                noVal2 = false; 
-                value2 = value; 
+                noVal2 = false;
+                value2 = value;
             }
         }
-        
     }
 }

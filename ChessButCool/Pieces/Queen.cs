@@ -25,7 +25,7 @@ namespace ChessButCool.Pieces
 
 		public override Vector2Int GetPieceNumbers()
         {
-            return new Vector2Int((int)side, 4); 
+            return new Vector2Int((int)side, 4);
         }
 	}
 }

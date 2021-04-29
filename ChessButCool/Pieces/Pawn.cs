@@ -34,7 +34,6 @@ namespace ChessButCool.Pieces
 
         private void FirstMove()
         {
-
             if ((Position.Y == 1 && side == SideColor.Black) || (Position.Y == 6 && side == SideColor.White))
             {
                 if (CanProceed(2))
@@ -42,8 +41,6 @@ namespace ChessButCool.Pieces
                     moves.Add(new Vector2Int(0, 2));
                 }
             }
-
-
         }
 
         private void CanTake()
@@ -63,7 +60,6 @@ namespace ChessButCool.Pieces
                         moves.Add(new Vector2Int(i, 1));
                     }
                 }
-
             }
         }
 
