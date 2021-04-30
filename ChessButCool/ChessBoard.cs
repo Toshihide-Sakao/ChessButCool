@@ -19,7 +19,7 @@ namespace ChessButCool
 
         private Image[][] imageArray;
         private Texture2D[][] textureArray;
-        private Pair<bool, Piece> ShowingMoves = new Pair<bool, Piece>();
+        private Pair<bool, Piece> ShowingMoves = new();
         private Pair<bool, SideColor> checkmated = new();
         private int state;
         
@@ -35,6 +35,27 @@ namespace ChessButCool
             StartBoard(); // Creating board checkred board
             FENStringConverter(StartingFEN); // puts pieces in starting position
             LoadTextures(); // Loading all textures from images
+
+            /*
+            TODO: For network
+
+            Client
+                TcpClient
+                Networkstream (Get from tcp client)
+                stream.write / stream.read
+
+            Server
+                TcpListener
+                TcpClient
+                Server.acceptTcpClient
+                needs threading for new clients
+                networkstream
+                send map back to client
+
+            lcok for threadings to be safe ()
+
+            TODO: Startmenu
+            */
         }
 
         
