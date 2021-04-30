@@ -45,13 +45,9 @@ namespace ChessButCool.Pieces
 
         private void CanTake()
         {
-            int sideMultiplier = 1;
-            for (int i = -1; i <= 1; i += 2)
+            int sideMultiplier = side == 0 ? -1 : 1;
+            for (int i = -1; i <= 2; i += 2)
             {
-                if ((int)side == 0)
-                {
-                    sideMultiplier = -1;
-                }
                 if (Position.X + i < 8 && Position.X + i >= 0 && Position.Y + sideMultiplier < 8 && Position.Y + sideMultiplier >= 0)
                 {
                     if (!board.GetMap()[Position.X + i, Position.Y + sideMultiplier].NoVal3) // if enemy piece exists on the place pawns can take on left side

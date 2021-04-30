@@ -12,7 +12,7 @@ namespace ChessButCool
         private readonly int width;
         private readonly int sqWidth;
         private Triple<int, int, Piece>[,] map = new Triple<int, int, Piece>[8, 8];
-        private readonly string StartingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+        private readonly string StartingFEN = "3k4/8/8/8/7R/6R1/8/3K4";
         private readonly string basePath = "Sprites/";
         private int turn = 0;
         private bool[] check = new bool[2];
@@ -279,6 +279,7 @@ namespace ChessButCool
                 }
                 // DeBuggerBoard();
             }
+            piece.GetPublicMoves();
 
             // Removes all moves which was invalid
             for (int j = IntsToRemove.Count - 1; j >= 0; j--)
