@@ -12,6 +12,7 @@ namespace ChessButCool
 
         public UI(int width, int height, Vector2Int pos, ChessBoard board)
         {
+            // Sets values
             this.width = width;
             this.height = height;
             this.pos = pos;
@@ -20,16 +21,20 @@ namespace ChessButCool
 
         public void Draw()
         {
+            // Draws the ouline of UI
             Raylib.DrawRectangle(pos.X, pos.Y, width, height, Color.BROWN);
+            // if white turn draw text with white font
             if (board.Turn % 2 == 0)
             {
                 Raylib.DrawText("White turn", pos.X + 5, 50, 40, Color.WHITE);
             }
+            // if black turn draw text with black font
             else
             {
                 Raylib.DrawText("Black turn", pos.X + 5, 50, 40, Color.BLACK);
             }
 
+            // draws the turn the game is on
             Raylib.DrawText(((board.Turn + 2) / 2).ToString(), pos.X + 5, 100, 30, Color.WHITE);
         }
     }

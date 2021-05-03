@@ -11,6 +11,7 @@ namespace ChessButCool
 
         private bool noVal3;
 
+        // Sets value for 1, 2 and 3
         public void SetValue(X value1, Y value2, Z value3)
         {
             this.value1 = value1;
@@ -18,6 +19,8 @@ namespace ChessButCool
             this.value3 = value3;
             noVal3 = false;
         }
+
+        // Sets value for 1 and 2
         public void SetValue(X value1, Y value2)
         {
             this.value1 = value1;
@@ -25,18 +28,21 @@ namespace ChessButCool
             noVal3 = true;
         }
 
+        // Sets value for 1
         public void SetValue(X value1)
         {
             this.value1 = value1;
             noVal3 = true;
         }
 
+        // if there is no vlue3 
         public bool NoVal3
         {
             get { return this.noVal3; }
             set { noVal3 = value; }
         }
 
+        // properties
         public X Value1
         {
             get { return this.value1; }

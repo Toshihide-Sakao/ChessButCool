@@ -9,6 +9,7 @@ namespace ChessButCool
         private Y value2;
         private bool noVal2;
 
+        // Sets value of 1 and 2
         public void SetValue(X value1, Y value2)
         {
             this.value1 = value1;
@@ -16,17 +17,20 @@ namespace ChessButCool
             noVal2 = false;
         }
 
+        // Sets value of 1 only
         public void SetValue(X value1)
         {
             this.value1 = value1;
             noVal2 = true;
         }
 
+        // gets if there is no value2
         public bool GetnoVal2()
         {
             return noVal2;
         }
 
+        // Properties
         public X Value1
         {
             get { return this.value1; }
@@ -38,6 +42,7 @@ namespace ChessButCool
             get { return this.value2; }
             set
             {
+                // sets no vlue2 to false;
                 noVal2 = false;
                 value2 = value;
             }

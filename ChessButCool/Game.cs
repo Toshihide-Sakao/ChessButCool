@@ -8,24 +8,32 @@ namespace ChessButCool
         private readonly int width;
         private readonly int height;
         private int state = 0;
+        private ChessBoard board;
+        private UI ui;
+        private StartMenu menu;
 
+        // Constructor getting the width and height
         public Game(int width, int height)
         {
             this.width = width;
             this.height = height;
 
+            // Draws for first time
             Draw();
         }
+
+        // Drawing the game
         public void Draw()
         {
             Raylib.InitWindow(width, height, "Chess");
 
             // generate chessboard and ui
-            ChessBoard board = new(700, new Vector2Int(50, 50), this);
-            UI ui = new(230, 700, new Vector2Int(760, 50), board);
+            board = new(700, new Vector2Int(50, 50), this);
+            ui = new(230, 700, new Vector2Int(760, 50), board);
 
-            // ok
-            StartMenu menu = new(width, new Vector2Int(0,0), this);
+            // defines menu
+            menu = new(width, new Vector2Int(0, 0), this);
+
             // update function
             while (!Raylib.WindowShouldClose())
             {
@@ -34,38 +42,56 @@ namespace ChessButCool
                 // draw bg
                 Raylib.ClearBackground(new Color(163, 163, 163, 255));
 
-                if (state == 1)
-                {
-                    // Updates and draws board
-                    board.Update();
-                    board.Draw();
-
-                    ui.Draw();
-                }
-                else if (state == 0)
-                {
-                    menu.Update();
-                    menu.Draw();
-                }
-                else if (state == 2)
-                {
-                    board = new(700, new Vector2Int(50, 50), this);
-                    ui = new(230, 700, new Vector2Int(760, 50), board);
-
-                    state = 1;
-                }
-
+                // Updates everything
+                Update();
 
                 // ends drawing
                 Raylib.EndDrawing();
             }
         }
+        
+        // Updates differently for every state
+        private void Update()
+        {
+            switch (state)
+            {
+                case 0:
+                    // Updates and draws menu
+                    menu.Update();
+                    menu.Draw();
+                    break;
+                case 1:
+                    // Updates and draws board
+                    board.Update();
+                    board.Draw();
 
+                    // Draws UI
+                    ui.Draw();
+                    break;
+                case 2:
+                    // Starts a new board and goes to state 1
+                    newBoard();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Intances a new board and moves to state 1
+        private void newBoard()
+        {
+            board = new(700, new Vector2Int(50, 50), this);
+            ui = new(230, 700, new Vector2Int(760, 50), board);
+
+            state = 1;
+        }
+
+        // Property for state
         public int State
         {
             get { return state; }
             set { state = value; }
         }
-        
+
     }
 }
