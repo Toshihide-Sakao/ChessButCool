@@ -8,6 +8,7 @@ namespace ChessButCool
 {
     public class ChessBoard
     {
+        private readonly Game game;
         private readonly Vector2Int pos;
         private readonly int width;
         private readonly int sqWidth;
@@ -21,16 +22,18 @@ namespace ChessButCool
         private Texture2D[][] textureArray;
         private Pair<bool, Piece> ShowingMoves = new();
         private Pair<bool, SideColor> checkmated = new();
-        private int state;
-        
+        private Rectangle playAgainPop;
+        private Rectangle exitMenuPop;
+
         // Constructor
-        public ChessBoard(int width, Vector2Int pos)
+        public ChessBoard(int width, Vector2Int pos, Game game)
         {
             this.width = width;
             this.pos = pos;
             sqWidth = (int)(width / 8.0f);
             ShowingMoves.SetValue(false);
             checkmated.SetValue(false);
+            this.game = game;
 
             StartBoard(); // Creating board checkred board
             FENStringConverter(StartingFEN); // puts pieces in starting position
@@ -58,7 +61,7 @@ namespace ChessButCool
             */
         }
 
-        
+
 
         // Update command which checks for user inputs every frame
         public void Update()
@@ -72,27 +75,44 @@ namespace ChessButCool
         {
             if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
             {
-                UnClick(); // Resets highlighted positions
                 Vector2Int mousepos = new(Raylib.GetMousePosition()); // Records mouse position when clicked
-
-                // if mouse is inside of the chessboard
-                if (mousepos.X > pos.X && mousepos.X < (pos.X + width) && mousepos.Y > pos.Y && mousepos.Y < (pos.Y + width))
+                if (!checkmated.Value1)
                 {
-                    // Calculates position according to the map array
-                    int mapX = (mousepos.X - pos.X) / sqWidth;
-                    int mapY = (mousepos.Y - pos.Y) / sqWidth;
+                    UnClick(); // Resets highlighted positions
 
-                    // if there is a piece on the position and if the piece color is their color they can move
-                    if (!map[mapX, mapY].NoVal3 && Turn % 2 == (int)map[mapX, mapY].Value3.Side)
+                    // if mouse is inside of the chessboard
+                    if (mousepos.X > pos.X && mousepos.X < (pos.X + width) && mousepos.Y > pos.Y && mousepos.Y < (pos.Y + width))
                     {
-                        // Highlight what moves the piece can do
-                        map[mapX, mapY].Value3.ShowMoves();
+                        // Calculates position according to the map array
+                        int mapX = (mousepos.X - pos.X) / sqWidth;
+                        int mapY = (mousepos.Y - pos.Y) / sqWidth;
 
-                        // record what piece is being selected
-                        ShowingMoves.SetValue(true, map[mapX, mapY].Value3);
+                        // if there is a piece on the position and if the piece color is their color they can move
+                        if (!map[mapX, mapY].NoVal3 && Turn % 2 == (int)map[mapX, mapY].Value3.Side)
+                        {
+                            // Highlight what moves the piece can do
+                            map[mapX, mapY].Value3.ShowMoves();
 
-                        // Highlight the piece which is selected
-                        map[mapX, mapY].Value2 = 2;
+                            // record what piece is being selected
+                            ShowingMoves.SetValue(true, map[mapX, mapY].Value3);
+
+                            // Highlight the piece which is selected
+                            map[mapX, mapY].Value2 = 2;
+                        }
+                    }
+                }
+                else
+                {
+                    if (mousepos.X > playAgainPop.x && mousepos.X < (playAgainPop.x + playAgainPop.width) && mousepos.Y > playAgainPop.y && mousepos.Y < (playAgainPop.y + playAgainPop.width))
+                    {
+                        game.State = 2;
+
+                        UnloadAll();
+                    }
+                    else if (mousepos.X > exitMenuPop.x && mousepos.X < (exitMenuPop.x + exitMenuPop.width) && mousepos.Y > exitMenuPop.y && mousepos.Y < (exitMenuPop.y + exitMenuPop.width))
+                    {
+                        game.State = 0;
+                        UnloadAll();
                     }
                 }
             }
@@ -419,13 +439,21 @@ namespace ChessButCool
                 // Gets the centerposition and makes a rectangle
                 Vector2Int centerPos = new(pos.X + (width / 2), pos.Y + (width / 2));
                 Rectangle endPopup = new(centerPos.X - (endWidth / 2), centerPos.Y - (endHeight / 2), endWidth, endHeight);
+                playAgainPop = new((int)endPopup.x + 40, (int)endPopup.y + (int)endPopup.height - 200, (int)endPopup.width - 80, 80);
+                exitMenuPop = new((int)endPopup.x + 40, (int)endPopup.y + (int)endPopup.height - 100, (int)endPopup.width - 80, 80);
 
                 // Draws the rectangle
                 Raylib.DrawRectangle((int)endPopup.x, (int)endPopup.y, (int)endPopup.width, (int)endPopup.height, new Color(77, 77, 77, (int)(255 * 0.95f)));
+                Raylib.DrawRectangle((int)playAgainPop.x, (int)playAgainPop.y, (int)playAgainPop.width, (int)playAgainPop.height, new Color(65, 157, 250, (int)(255 * 0.6f)));
+                Raylib.DrawRectangle((int)exitMenuPop.x, (int)exitMenuPop.y, (int)exitMenuPop.width, (int)exitMenuPop.height, new Color(240, 146, 58, (int)(255 * 0.6f)));
 
                 // Draws the text alligned at center and the top of the popup
                 int textWidth = Raylib.MeasureText($"{checkmated.Value2} won!", 60);
                 Raylib.DrawText($"{checkmated.Value2} won!", centerPos.X - (textWidth / 2), centerPos.Y - (int)((endHeight / 2) - (endHeight / 10)), 60, Color.WHITE);
+                int playagainTextWidth = Raylib.MeasureText($"Play Again", 50);
+                Raylib.DrawText($"Play Again", centerPos.X - (playagainTextWidth / 2), centerPos.Y - (int)((endHeight / 2) - (endHeight / 10)) + 75, 50, Color.WHITE);
+                int exitToMenuTextWidth = Raylib.MeasureText($"Exit to Menu", 50);
+                Raylib.DrawText($"Exit to Menu", centerPos.X - (exitToMenuTextWidth / 2), centerPos.Y - (int)((endHeight / 2) - (endHeight / 10)) + 180, 50, Color.WHITE);
             }
         }
 
@@ -545,6 +573,27 @@ namespace ChessButCool
             }
         }
 
+        private void UnloadAll()
+        {
+            // unlaod all textures
+            for (int i = 0; i < textureArray.Length; i++)
+            {
+                for (int j = 0; j < textureArray[i].Length; j++)
+                {
+                    Raylib.UnloadTexture(textureArray[i][j]);
+                }
+            }
+
+            // unloads all images
+            for (int i = 0; i < imageArray.Length; i++)
+            {
+                for (int j = 0; j < imageArray[i].Length; j++)
+                {
+                    Raylib.UnloadImage(imageArray[i][j]);
+                }
+            }
+        }
+
         // debug ----------------------
         private void DeBuggerBoard()
         {
@@ -576,11 +625,6 @@ namespace ChessButCool
         public Triple<int, int, Piece>[,] GetMap()
         {
             return map;
-        }
-        public int State
-        {
-            get { return state; }
-            set { state = value; }
         }
     }
 }
