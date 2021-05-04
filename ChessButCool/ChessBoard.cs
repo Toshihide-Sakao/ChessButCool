@@ -81,9 +81,9 @@ namespace ChessButCool
                 if (!checkmated.Value1)
                 {
                     UnClick(); // Resets highlighted positions
-
+                    int offsetVal = 5; // offset for max value so it is inside board
                     // if mouse is inside of the chessboard
-                    if (mousepos.X > pos.X && mousepos.X < (pos.X + width) && mousepos.Y > pos.Y && mousepos.Y < (pos.Y + width))
+                    if (mousepos.X > pos.X && mousepos.X < (pos.X + width - offsetVal) && mousepos.Y > pos.Y && mousepos.Y < (pos.Y + width - offsetVal))
                     {
                         // Calculates position according to the map array
                         int mapX = (mousepos.X - pos.X) / sqWidth;
@@ -130,9 +130,9 @@ namespace ChessButCool
             {
                 // records mouse position when clicked
                 Vector2Int mousepos = new(Raylib.GetMousePosition());
-
+                int offsetVal = 5; // offset for max value so it is inside board
                 // mouse was clicked above the chessboard
-                if (mousepos.X > pos.X && mousepos.X < (pos.X + width) && mousepos.Y > pos.Y && mousepos.Y < (pos.Y + width))
+                if (mousepos.X > pos.X && mousepos.X < (pos.X + width - offsetVal) && mousepos.Y > pos.Y && mousepos.Y < (pos.Y + width - offsetVal))
                 {
                     // Calculates position according to the map array
                     int mapX = (mousepos.X - pos.X) / sqWidth;
