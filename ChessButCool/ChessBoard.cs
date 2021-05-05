@@ -57,7 +57,6 @@ namespace ChessButCool
 
             lcok for threadings to be safe ()
 
-            TODO: Startmenu
             */
         }
 
